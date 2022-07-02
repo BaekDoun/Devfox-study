@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.homework.mapper.HomeMapper">
+  <!-- 크리테리아 -->
+  <sql id="criteria">
+    <choose>
+       <!-- myBatis에서는 <choose>를 이용하여 여러가지 when 을 이용하여 검색조건을 이용할 수 있다. 06/30 검색을위해 먼저 작업해둠-->
+       <when test="type == 'W'.toString()">
+          nicname like '%' || #{keyword}||'%' and
+       </when>
+       
+       <when test="type == 'T'.toString()">
+          title like '%' || #{keyword}||'%' and
+       </when>
+       
+       <when test="type == 'C'.toString()">
+          contents like '%' || #{keyword}||'%' and
+       </when>
+       
+    <otherwise>
+   </otherwise>
+    </choose>
+ </sql>
+ 
+ <!-- 총 글수 + 검색어 -->
+ <select id="boardCount" resultType="int">
+    select count(*) from tbl_board
+    where
+    <include refid="criteria"></include>
+    <![CDATA[
+    boardidx > 0  
+    ]]>
+ </select>
+ 
+    <!-- 리스트 페이지처리    -->
+   <select id="getListWithPaging" resultType="com.homework.domain.BoardVO">
+   <![CDATA[   
+      select * from (
+         select /*+ index_desc(tbl_board,PK_BOARD) */ rownum rn,boardidx,useridx,title,contents,nicname,boardpassword,boardregdate,readcnt
+         from tbl_board
+         where
+   ]]>
+      <include refid="criteria"></include>
+      <![CDATA[
+         rownum <= #{pageNum} * #{amount}   
+      ) where rn > (#{pageNum}-1) * #{amount}
+      ]]>
+   </select>
+   
+</mapper>

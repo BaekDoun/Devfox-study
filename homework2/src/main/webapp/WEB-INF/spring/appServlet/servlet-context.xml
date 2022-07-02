@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- 자바 어노테이션 해석하게하는 역할 (프로젝트 만들시 default 생성) / 06.27 -->
+	<annotation-driven />
+
+	<!-- 정적 자원(클라이언트단)을 매핑해주는 코드 (프로젝트 만들시 default 생성) 06.27 -->
+	<resources mapping="/resources/**" location="/resources/" />
+
+	<!-- 뷰 리졸버 설정 (프로젝트 만들시 default 생성) 06.27 -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+	
+	<!-- 객체를 주입할 때 정의한 패키지에서 검색하겠다는 의미 (프로젝트 생성시 만든 패키지 이름이 default 생성 -기본 컨트롤러로 설정-) 06.27-->
+	<context:component-scan base-package="com.homework.controller" />
+	
+	
+	
+</beans:beans>
