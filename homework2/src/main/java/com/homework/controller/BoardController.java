@@ -1,5 +1,7 @@
 package com.homework.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.homework.domain.BoardVO;
+import com.homework.domain.ReplyVO;
 import com.homework.security.UserSHA256;
 import com.homework.service.BoardService;
 
@@ -52,8 +55,11 @@ public class BoardController {
 	public void getBoardVo(Model model, BoardVO vo){
 		System.out.println(vo.getBoardidx());
 		BoardVO realvo = service.getBoardVo(vo);
+		List<ReplyVO> list = service.getBoardReply(vo.getBoardidx());
+		int replycnt = service.cntreply(vo.getBoardidx());
 		model.addAttribute("vo",realvo);
-		
+		model.addAttribute("cnt",replycnt);
+		model.addAttribute("replylist",list);	
 	}
 	//board modify 로 이동 07/01
 	@GetMapping("boardmodify.do")
@@ -77,6 +83,7 @@ public class BoardController {
 			return 0;			
 		}
 	}
+	
 	//수정하기  07/01
 	@PostMapping("boardmodifypro.do")
 	public String modifyPro(BoardVO vo) {
@@ -98,9 +105,58 @@ public class BoardController {
  		return "redirect:/";
  	}
  	//게시물 삭제하기
- 	 @GetMapping("boardsessiondelete.do")
- 	 public String deletpro1(BoardVO vo) {
- 	 	service.deletepro(vo);
- 	 	return "redirect:/";
- 	 }
+ 	@GetMapping("boardsessiondelete.do")
+ 	public String deletpro1(BoardVO vo) {
+ 		service.deletepro(vo);
+ 		return "redirect:/";
+ 	}
+ 	
+ 	//댓글 등록하기
+ 	@PostMapping("boardreplypro.do")
+ 	public String replyinsert(ReplyVO vo) {
+ 		if(vo.getReplypassword() != null) {
+			System.out.println("비회원이 등록하여 비밀번호를 암호화 하여 등록합니다.");
+			String securityPassword = UserSHA256.getSHA256(vo.getReplypassword());
+			vo.setReplypassword(securityPassword);			
+			service.insertReply(vo);
+		}else {
+			System.out.println("회원이 등록한 댓글이므로 비밀번호는 필요없습니다.");
+			service.logininsertReply(vo);
+		}
+ 		
+		return "redirect:/board/boardview.do?boardidx="+vo.getBoardidx();
+ 	}
+ 	
+ 	@GetMapping("replysessiondelete.do")
+ 	public String replydelete1(ReplyVO vo) {
+ 		System.out.println("replyidx : " + vo.getReplyidx());
+ 		System.out.println("boardidx : " + vo.getBoardidx());
+ 		service.replydeletepro(vo);
+ 		
+ 		return "redirect:/board/boardview.do?boardidx="+vo.getBoardidx();
+ 	}
+ 	
+	//댓글 삭제하기 비번 체크 새로 열기 07/03
+	@GetMapping("replydeletecheck.do")
+	public void replydeleteCheck(ReplyVO vo, Model model) {
+		System.out.println("삭제하는 댓글 번호 : " + vo.getReplyidx());
+		model.addAttribute("vo",vo);
+	}
+	
+	//비회원 댓글 비번 체크 07/03
+	@PostMapping("replypasswordcheck.do")
+	public @ResponseBody int checkDeletePassword(ReplyVO vo) {
+		System.out.println(vo.getBoardidx());
+		System.out.println(vo.getReplypassword());
+		
+		ReplyVO checkvo = service.getReplyVO(vo);
+		//전송받은 비밀번호 암호화 
+		String securityPassword = UserSHA256.getSHA256(vo.getReplypassword());
+		if(checkvo.getReplypassword().equals(securityPassword)) {
+			return 1;
+		}else {
+			return 0;			
+		}
+	}
+ 	 
 }

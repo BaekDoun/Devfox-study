@@ -4,12 +4,13 @@ import lombok.Data;
 
 @Data
 public class ReplyVO {
-	int replyidx;
-	int boardidx;
-	int useridx;
-	String nicname;
-	String replypassword;
-	String replyregdate;
-	int parent;
+	private int replyidx;
+	private int boardidx;
+	private int useridx;
+	private String nicname;
+	private String replypassword;
+	private String replyregdate;
+	private int parent;
+	private String replycontents;
 	
 }

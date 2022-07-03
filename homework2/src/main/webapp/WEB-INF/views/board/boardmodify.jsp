@@ -27,7 +27,6 @@ margin-top: 25px;
 </style>
 
 <script>
-var useridx = $("#useridx").val();
 
 function send(){
 	if(modi.title.value==""){
@@ -54,6 +53,10 @@ function send(){
 	}
 	//비밀번호를 입력하면 이전에 등록할때 입력한 비밀번호와 현재 입력한 비밀번호가 일치하는지 확인하기 위해
 	//비동기 전송으로 검사산다. 07/01
+	
+	var useridx = $("#useridx").val();
+	//var 함수는 같은 function{} 안에서만 적용가능 지역변수 개념 07/03
+	alert(useridx);
 	if(useridx == 0){
 		var boardidx = $("#boardidx").val();
 		var boardpassword = $("#boardpassword").val();
