@@ -31,23 +31,23 @@ var useridx = $("#useridx").val();
 
 function send(){
 	if(write.title.value==""){
-		alert("제목을 입력해주세요");
+		alert("タイトルを入力してください。");
 		write.title.focus();
 		return false;
 	}
 	if(write.contents.value==""){
-		alert("내용을 입력해주세요");
+		alert("内容を入力してください。");
 		write.contents.focus();
 		return false;
 	}
 	if(write.useridx.value=="0"){
 		if(write.nicname.value==""){
-			alert("닉네임을 입력해주세요");
+			alert("ニックネームを入力してください。");
 			write.nicname.focus();
 			return false;
 		}
 		if(write.boardpassword.value==""){
-			alert("비밀번호을 입력해주세요");
+			alert("パスワードを入力してください。");
 			write.boardpassword.focus();
 			return false;
 		}
@@ -61,60 +61,60 @@ function send(){
 		<div class="container">
 			<div class="row">
 				<div class="col-2"></div>
-				<!-- 양옆 여백 -->
+				<!-- 余白 -->
 				<div class="col-8">
 				  <!-- h3 Title -->	
 	              <h3 class="title_01">Write</h3>
-				  <!-- form 시작 -->
+				  <!-- form -->
 	              <form name="write" method="post" action="/board/boardwritepro.do" onsubmit="return send()">
 				  
-				  <!-- 로그인한 유저이면 세션에 있는 정보를 히든으로 보낸다. -->
+				  <!-- ログインしたユーザーであればセッションにある情報をhiddenで送る。 -->
 	              <c:if test="${sessionUser.username != null}">
 	              <input type="hidden" name="useridx" value="${sessionUser.useridx}" id="useridx">
 	              <input type="hidden" name="nicname" value="${sessionUser.nicname}">
 	              </c:if>
 	              
-	              <!-- 비회원일 경우 판단을 위해 히든으로 useridx를 ""로 설정 -->
+	              <!-- 非会員の場合 useridxを ""で設定 -->
 	              <c:if test="${sessionUser.username == null}">
 	              <input type="hidden" name="useridx" value="0" id="useridx">
 	              </c:if>
 	              
 	              <!-- title -->
 	              <div class="input-group has-validation title_02">
-	                <span class="input-group-text input_01">Title</span>
+	                <span class="input-group-text input_01">タイトル</span>
 	                <input type="text" class="form-control" id="title" name="title">
 	              </div>
 	              
 	              <!-- contents -->
-	              <span class="input-group-text contents_02">Contents</span>
+	              <span class="input-group-text contents_02">内容</span>
 	              <div class="input-group has-validation">
 	                <textarea rows="15" cols="100" name="contents"></textarea>
 	              </div>
 	              
-	              <!-- 비회원일시 닉네임 입력 -->
+	              <!-- 非会員ニックネーム-->
 	              <c:if test="${sessionUser.username == null}">
 	               <div class="input-group has-validation title_02">
-	                <span class="input-group-text input_01">Nicname</span>
+	                <span class="input-group-text input_01">ニックネーム</span>
 	                <input type="text" class="form-control" id="nicname" name="nicname">
 	              </div>
 	              </c:if>
 	              
-	               <!-- 비회원일시 비밀번호 입력 -->
+	               <!-- 非会員パスワード -->
 	              <c:if test="${sessionUser.username == null}">
 	              <div class="input-group has-validation title_02">
-	                <span class="input-group-text input_01">PW</span>
+	                <span class="input-group-text input_01">パスワード</span>
 	                <input type="text" class="form-control" id="boardpassword" name="boardpassword">
 	              </div>
 	              </c:if>
-	              <!-- 버튼 -->
+	              <!-- ボタン -->
 	              <div class="btn_01">
-				  	<button type="submit" class="btn btn-primary">등록</button>&nbsp;&nbsp;
-				  	<button type="button" class="btn btn-primary" onClick="history.back()">취소</button>
+				  	<button type="submit" class="btn btn-primary">登録</button>&nbsp;&nbsp;
+				  	<button type="button" class="btn btn-primary" onClick="history.back()">キャンセル</button>
 				  </div>
            
 	              </form>
 				</div>
-				<!-- 양옆 여백 -->				
+				<!-- 余白 -->				
 				<div class="col-2"></div>
 			</div>
 		</div>

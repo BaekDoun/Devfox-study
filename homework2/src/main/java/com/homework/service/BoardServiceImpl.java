@@ -58,4 +58,8 @@ public class BoardServiceImpl implements BoardService {
 	public ReplyVO getReplyVO(ReplyVO vo) {
 		return mapper.getReplyVO(vo);
 	}
+	@Override
+	public void updateViewCnt(BoardVO vo) {
+		mapper.updateViewCnt(vo);
+	}
 }

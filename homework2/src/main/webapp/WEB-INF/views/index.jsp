@@ -30,25 +30,25 @@ a{text-decoration: none;}
 					<div class="col-10">
 						<!-- JSTL c: 테스를 이용하여 로그인한 유저와 비회원에게 나타나는 텍스트를 설정 -->
 						<c:if test="${sessionUser.username == null}">
-						<p class="p_01">비회원으로 사용중입니다.</p>
+						<p class="p_01">非会員で利用しています。</p>
 						</c:if>
 						
 						<c:if test="${sessionUser.username != null}">
-						<p class="p_01">${sessionUser.nicname}님 환영합니다!</p>
+						<p class="p_01">${sessionUser.nicname}様ようこそ!</p>
 						</c:if>
 					</div>
 					<div class="col-2">
-						<button type="button" class="btn btn-primary btn_01" onCLick="goWrite()">Write</button>					
+						<button type="button" class="btn btn-primary btn_01" onCLick="goWrite()">作成</button>					
 					</div>
 				</div>
 
 				<table class="table">
 				<thead>
 					<tr>
-						<th scope="col" class="th_01">글번호</th>
-						<th scope="col" class="th_01">제목</th>
-						<th scope="col" class="th_01">작성자</th>
-						<th scope="col" class="th_01">조회수</th>					
+						<th scope="col" class="th_01">番号</th>
+						<th scope="col" class="th_01">タイトル</th>
+						<th scope="col" class="th_01">作成者</th>
+						<th scope="col" class="th_01">読んだ回数</th>					
 					</tr>
 				</thead>
 				<tbody>
@@ -108,12 +108,12 @@ a{text-decoration: none;}
 							<input type="hidden" name="pageNum" value="${page.cri.pageNum }">
 							<input type="hidden" name="amount" value="${page.cri.amount }">
 							<select name="type" class="select_Btn">
-								<option value="T" <c:if test="${page.cri.type=='T'}"> selected </c:if>>제목</option>
-								<option value="C" <c:if test="${page.cri.type=='C'}"> selected </c:if>>내용</option>
-								<option value="W" <c:if test="${page.cri.type=='W'}"> selected </c:if>>작성자</option>
+								<option value="T" <c:if test="${page.cri.type=='T'}"> selected </c:if>>タイトル</option>
+								<option value="C" <c:if test="${page.cri.type=='C'}"> selected </c:if>>内容</option>
+								<option value="W" <c:if test="${page.cri.type=='W'}"> selected </c:if>>作成者</option>
 							</select>
 								<input type="text" name="keyword" class="search_word noticeserachbar">
-							<button class="btn_search noticeserachBtn" type="submit"><i class="fa fa-search"></i><span class="sr-only">검색</span></button>
+							<button class="btn_search noticeserachBtn" type="submit"><i class="fa fa-search"></i><span class="sr-only">検索</span></button>
 						</form>
 					</div>
 					
@@ -150,11 +150,11 @@ a{text-decoration: none;}
       var searchForm =$("#searchForm");
       $(".searchbarBTn").on("click",function(e){
          if(!searchForm.find("option:selected").val()){
-            alert("검색종류를 선택하세요");
+            alert("検索種類を選択してください。");
             return false;
          }
          if(!searchForm.find("input[name='keyword']").val()){
-            alert("키워드를 입력하세요");
+            alert("キーワードを入力してください。");
             return false;
          }
          searchForm.find("input[name='pageNum']").val("1");

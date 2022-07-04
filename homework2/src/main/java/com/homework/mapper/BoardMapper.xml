@@ -84,4 +84,9 @@
  		from tbl_Reply
  		where replyidx=#{replyidx}
  	</select>
+ 	
+ 	<update id="updateViewCnt">
+ 		update tbl_board set readcnt = readcnt+1
+ 		where boardidx = #{boardidx}
+ 	</update>
 </mapper>

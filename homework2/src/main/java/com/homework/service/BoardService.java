@@ -28,5 +28,7 @@ public interface BoardService {
 	public int cntreply(int boardidx);
 	//reply VO 정보 가져오기
 	public ReplyVO getReplyVO(ReplyVO vo);
+	//조회수 증가
+	public void updateViewCnt(BoardVO vo);
 
 }

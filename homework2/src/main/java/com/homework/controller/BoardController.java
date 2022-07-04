@@ -2,6 +2,10 @@ package com.homework.controller;
 
 import java.util.List;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,8 +56,38 @@ public class BoardController {
 	
 	//board view 로 이동 07/01
 	@GetMapping("boardview.do")
-	public void getBoardVo(Model model, BoardVO vo){
+	public void getBoardVo(Model model, BoardVO vo,
+			HttpServletRequest request, HttpServletResponse response){
 		System.out.println(vo.getBoardidx());
+		
+		//cookie를 이용하여 조회수 중복 증가 불가로 만들기
+		Cookie[] cookies = request.getCookies();
+		//비교를 위한 쿠키
+		Cookie viewCookie = null;
+		//쿠키가 존재하는 경우
+		if(cookies!=null && cookies.length > 0) {
+			 for(int x=0; x<cookies.length; x++) {
+		            //Cookie의 name이 cookie+co.getboardidx() 와 일치하는 쿠키를 viewCookie에 넣어준다
+		            if(cookies[x].getName().equals("cookie"+vo.getBoardidx())) {
+		               System.out.println("쿠키있음");
+		               viewCookie = cookies[x];
+		            }
+		      }
+		}
+		
+		if(vo != null) {
+			if(viewCookie == null) {
+				//view Cookie가 null일 경우 쿠키를 생성해서 조회수 증가처리
+				service.updateViewCnt(vo);
+				//쿠키생성(이름, 값)
+				Cookie newCookie = new Cookie("cookie"+vo.getBoardidx(),"|" +vo.getBoardidx() +"|");
+				//쿠키추가
+				newCookie.setMaxAge(60);
+				response.addCookie(newCookie);
+			}
+		}
+		//쿠키 끝
+		
 		BoardVO realvo = service.getBoardVo(vo);
 		List<ReplyVO> list = service.getBoardReply(vo.getBoardidx());
 		int replycnt = service.cntreply(vo.getBoardidx());

@@ -10,7 +10,7 @@ margin: 5px;
 <script>
 function checkpassword(){
 	if(del.replypassword.value==""){
-		alert("비밀번호를 입력해주세요.");
+		alert("パスワードを入力してください。");
 		del.replypassword.focus();
 		return;
 	}
@@ -24,12 +24,12 @@ function checkpassword(){
         data:sendData,
         success:function(result){
         	if(result==0){
-        		alert("비밀번호가 올바르지 않습니다.");
+        		alert("パスワードが正しくありません。");
         		$("#replypassword").val("");
         		$("#replypassword").focus();
         		return;
         	}else if(result==1){
-        		//비밀번호가 일치하면 1을 반환하여 수정 form을 submit 한다.
+        		//パスワードが一致すれば、1を返還して修正formをsubmitする。
                 del.submit();	        		
         	}
         }
@@ -37,7 +37,7 @@ function checkpassword(){
 }
 </script>
 
-<p class="delete_01">비밀번호를 입력해주세요.</p>
+<p class="delete_01">パスワードを入力してください。</p>
 <form name="del" method="get" action="/board/replysessiondelete.do">
 <div class="delete_01">
 <input type="password" name="replypassword" id="replypassword" >
@@ -45,8 +45,8 @@ function checkpassword(){
 <input type="hidden" name="boardidx" id="boardidx" value="${vo.boardidx}">
 </div>
 <div class="delete_01">
-<input type="button" value="삭제하기" onClick="checkpassword()">&nbsp;&nbsp;
-<input type="button" value="취소" onCLick="history.back()">
+<input type="button" value="削除" onClick="checkpassword()">&nbsp;&nbsp;
+<input type="button" value="キャンセル" onCLick="history.back()">
 </form>
 </div>
 

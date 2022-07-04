@@ -30,32 +30,32 @@ margin-top: 25px;
 
 function send(){
 	if(modi.title.value==""){
-		alert("제목을 입력해주세요");
+		alert("タイトルを入力してください。");
 		modi.title.focus();
 		return;
 	}
 	if(modi.contents.value==""){
-		alert("내용을 입력해주세요");
+		alert("内容を入力してください。");
 		modi.contents.focus();
 		return;
 	}
 	if(modi.useridx.value=="0"){
 		if(modi.nicname.value==""){
-			alert("닉네임을 입력해주세요");
+			alert("ニックネームを入力してください。");
 			modi.nicname.focus();
 			return;
 		}
 		if(modi.boardpassword.value==""){
-			alert("등록할때 입력한 비밀번호을 입력해주세요");
+			alert("登録した時入力したパスワードを入力してください。");
 			modi.boardpassword.focus();
 			return;
 		}
 	}
-	//비밀번호를 입력하면 이전에 등록할때 입력한 비밀번호와 현재 입력한 비밀번호가 일치하는지 확인하기 위해
-	//비동기 전송으로 검사산다. 07/01
+	//パスワードを入力すると、以前登録する際に入力したパスワードと現在入力したパスワードが一致するか確認するため、
+	//非同期転送で検査をする。 07/01
 	
 	var useridx = $("#useridx").val();
-	//var 함수는 같은 function{} 안에서만 적용가능 지역변수 개념 07/03
+	//var 関数は同じ function{} 中でのみ適用可能地域変数概念 07/03
 	alert(useridx);
 	if(useridx == 0){
 		var boardidx = $("#boardidx").val();
@@ -67,19 +67,19 @@ function send(){
 	        data:sendData,
 	        success:function(result){
 	        	if(result==0){
-	        		alert("비밀번호가 올바르지 않습니다.");
+	        		alert("パスワードが正しくありません。");
 	        		$("#boardpassword").val("");
 	        		$("#boardpassword").focus();
 	        		return;
 	        	}else if(result==1){
-	        		//비밀번호가 일치하면 1을 반환하여 수정 form을 submit 한다.
+	        		//パスワードが一致すれば、1を返還して修正formをsubmitする。
 	                modi.submit();	        		
 	        	}
 	        }
 		})
 		
 	}else{
-		//비회원이 등록한글이 아닐경우 작성자와 로그인한 유저가 동일할 경우 바로 수정하도록 한다.
+		//非会員が登録した文でない場合、作成者とログインしたユーザーが同じ場合、すぐに修正するようにする。
 		modi.submit()
 	}
 }
@@ -90,60 +90,60 @@ function send(){
 		<div class="container">
 			<div class="row">
 				<div class="col-2"></div>
-				<!-- 양옆 여백 -->
+				<!-- 余白 -->
 				<div class="col-8">
 				  <!-- h3 Title -->	
-	              <h3 class="title_01">Modify</h3>
-				  <!-- form 시작 -->
+	              <h3 class="title_01">修正</h3>
+				  <!-- form -->
 	              <form name="modi" method="post" action="/board/boardmodifypro.do">
 				  <input type="hidden" name="boardidx" id="boardidx" value="${vo.boardidx}">
-				  <!-- 로그인한 유저이면 세션에 있는 정보를 히든으로 보낸다. -->
+				  <!-- 会員の場合　session情報を　	hiddenで 送る -->
 	              <c:if test="${sessionUser.username != null}">
 	              <input type="hidden" name="useridx" value="${sessionUser.useridx}" id="useridx">
 	              <input type="hidden" name="nicname" value="${sessionUser.nicname}">
 	              </c:if>
 	              
-	              <!-- 비회원일 경우 판단을 위해 히든으로 useridx를 ""로 설정 -->
+	              <!-- 非会員の場合 hiddenで useridxを ""で 設定 -->
 	              <c:if test="${sessionUser.username == null}">
 	              <input type="hidden" name="useridx" value="0" id="useridx">
 	              </c:if>
 	              
 	              <!-- title -->
 	              <div class="input-group has-validation title_02">
-	                <span class="input-group-text input_01">Title</span>
+	                <span class="input-group-text input_01">タイトル</span>
 	                <input type="text" class="form-control" id="title" name="title" value="${vo.title}">
 	              </div>
 	              
 	              <!-- contents -->
-	              <span class="input-group-text contents_02">Contents</span>
+	              <span class="input-group-text contents_02">内容</span>
 	              <div class="input-group has-validation">
 	                <textarea rows="15" cols="100" name="contents">${vo.contents}</textarea>
 	              </div>
 	              
-	              <!-- 비회원일시 닉네임 입력 -->
+	              <!-- ログインしてない場合ニックネームを入力　 -->
 	              <c:if test="${sessionUser.username == null}">
 	               <div class="input-group has-validation title_02">
-	                <span class="input-group-text input_01">Nicname</span>
+	                <span class="input-group-text input_01">ニックネーム</span>
 	                <input type="text" class="form-control" id="nicname" name="nicname" value="${vo.nicname }">
 	              </div>
 	              </c:if>
 	              
-	               <!-- 비회원일시 비밀번호 입력 -->
+	               <!-- 非会員の場合パスワード入力 -->
 	              <c:if test="${sessionUser.username == null}">
 	              <div class="input-group has-validation title_02">
-	                <span class="input-group-text input_01">PW</span>
+	                <span class="input-group-text input_01">パスワード</span>
 	                <input type="text" class="form-control" id="boardpassword" name="boardpassword">
 	              </div>
 	              </c:if>
-	              <!-- 버튼 -->
+	              <!-- ボタン -->
 	              <div class="btn_01">
-				  	<button type="button" class="btn btn-primary" onClick="send()">수정</button>&nbsp;&nbsp;
-				  	<button type="button" class="btn btn-primary" onClick="history.back()">취소</button>
+				  	<button type="button" class="btn btn-primary" onClick="send()">修正</button>&nbsp;&nbsp;
+				  	<button type="button" class="btn btn-primary" onClick="history.back()">キャンセル</button>
 				  </div>
            
 	              </form>
 				</div>
-				<!-- 양옆 여백 -->				
+				<!-- 余白 -->				
 				<div class="col-2"></div>
 			</div>
 		</div>
