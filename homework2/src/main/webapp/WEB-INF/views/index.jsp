@@ -59,7 +59,14 @@ a{text-decoration: none;}
 					<c:forEach var="list" items="${list}">
 					<tr>
 						<td>${cnt}</td>
-						<td><a href="/board/boardview.do?boardidx=${list.boardidx}">${list.title}</a></td>
+						<td>
+						<c:if test="${sessionUser.useridx != null}">
+						<a href="/board/boardview.do?boardidx=${list.boardidx}&sessionUseridx=${sessionUser.useridx}">${list.title}</a>
+						</c:if>
+						<c:if test="${sessionUser.useridx == null}">
+						<a href="/board/boardview.do?boardidx=${list.boardidx}&sessionUseridx=0">${list.title}</a>
+						</c:if>
+						</td>
 						<td>${list.nicname}</td>
 						<td>${list.readcnt}</td>
 					</tr>

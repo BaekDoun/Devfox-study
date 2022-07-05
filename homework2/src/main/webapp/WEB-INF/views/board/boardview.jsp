@@ -41,6 +41,40 @@ border: 1px solid #ccc;
 .span_01{
 font-size: small;
 }
+.like_button_01{
+text-align: center;
+}
+.image_div_01{
+display: flex;
+justify-content: center;
+align-items: center;
+text-align: center;
+}
+.heart_01{
+width: 40px;
+height: 40px;
+object-fit: cover;
+cursor: pointer;
+}
+.heart_02{
+width: 40px;
+height: 40px;
+object-fit: cover;
+cursor: pointer;
+}
+.heart_03{
+width: 40px;
+height: 40px;
+object-fit: cover;
+cursor: pointer;
+}
+.heart_04{
+width: 40px;
+height: 40px;
+object-fit: cover;
+cursor: pointer;
+}
+
 
 </style>
 
@@ -128,6 +162,86 @@ font-size: small;
 	function replydelete2(replyidx, boardidx){
 		location.href='/board/replydeletecheck.do?replyidx='+replyidx+'&boardidx='+boardidx;
 	}
+	
+	//회원 좋아요 기능
+	$(function(){
+		$(".heart_02").on("click", function(){
+			var useridx = $(".useridx").val();
+			var boardidx = ${vo.boardidx};
+			var sendData = {'useridx':useridx, 'boardidx':boardidx};
+			
+			$.ajax({
+				url:'/board/heartup.do',
+				data:sendData,
+				type:'post',
+				success:function(data){
+					if(data==1){
+						//class 이름을 바꿔도 같은 function을 실행하는 문제 발생 해결방법 강구
+						//$('.heart_02').prop("src","/resources/image/like.jpg");
+						//$('.heart_02').attr("class","heart_01");
+						$('.heart_02').hide();
+						$('.heart_01').show();
+						
+						$.ajax({
+							url:'/board/getheartcnt.do',
+							data: {'boardidx':boardidx},
+							type:'post',
+							success:function(result){
+								$(".span_heart").html("");
+								$(".span_heart").html(result);
+							}
+						})
+					}
+				}
+			})
+			//ajax 끝
+		})
+		
+		//회원 좋아요 취소
+		$(".heart_01").on("click", function(){
+			var useridx = $(".useridx").val();
+			var boardidx = ${vo.boardidx};
+			var sendData = {'useridx':useridx, 'boardidx':boardidx};
+			
+			$.ajax({
+				url:'/board/heartdown.do',
+				data:sendData,
+				type:'post',
+				success:function(data){
+					if(data==1){
+						//class 이름을 바꿔도 같은 function을 실행하는 문제 발생 해결방법 강구
+						//$('.heart_01').prop("src","/resources/image/nolike.png");
+						//$('.heart_01').attr("class","heart_02");
+						
+						$('.heart_01').hide();
+						$('.heart_02').show();
+						
+						$.ajax({
+							url:'/board/getheartcnt.do',
+							data: {'boardidx':boardidx},
+							type:'post',
+							success:function(result){
+								$(".span_heart").html("");
+								$(".span_heart").html(result);
+							}
+						})
+					}
+				}
+			})
+			//ajax 끝
+		})
+		
+		$(".heart_04").on("click", function(){
+			var boardidx = ${vo.boardidx};
+			location.href="/board/likeinsertcheck.do?boardidx="+boardidx;
+		})
+		$(".heart_03").on("click", function(){
+			var boardidx = ${vo.boardidx};
+			var heartcookie = $(".heartcookie").val();
+			location.href="/board/likedeletepasswordcheck.do?boardidx="+boardidx+"&heartcookie="+heartcookie;
+		})
+	//function 끝
+	})
 </script>
 
 <!-- sub contents -->	
@@ -147,6 +261,43 @@ font-size: small;
 				<div class="view_contents_01">
 					<!-- preタグを利用すれば、textareaに何度も分かち書きと<br>タグまで全て適用させてくれる 07/01 -->
 					<pre>${vo.contents}</pre>
+					
+					<!-- like button -->
+					<div class="like_button_01">
+						<div class="image_div_01">
+						
+						<!-- 회원의 경우 -->
+						<c:if test="${sessionUser.useridx != null}">
+						<input type="hidden" value="" name="cookie" class="heartcookie">
+						<c:if test="${heartSwich eq 'yes'}">
+							<img src="/resources/image/like.jpg" class="heart_01">
+							<img src="/resources/image/nolike.png" class="heart_02" style="display: none;">
+						</c:if>
+						<c:if test="${heartSwich ne 'yes'}">
+							<img src="/resources/image/like.jpg" class="heart_01" style="display: none;">
+							<img src="/resources/image/nolike.png" class="heart_02"> 
+						</c:if>
+						</c:if>
+						
+						<!-- --------------------------------- -->
+						
+						<!-- 비회원인 경우 -->
+						<c:if test="${sessionUser.useridx == null}">
+						<input type="hidden" value="${heartcookie}" name="cookie" class="heartcookie">
+						<c:if test="${heartSwich eq 'yes'}">
+							<img src="/resources/image/like.jpg" class="heart_03">
+							<img src="/resources/image/nolike.png" class="heart_04" style="display: none;">
+						</c:if>
+						<c:if test="${heartSwich ne 'yes'}">
+							<img src="/resources/image/like.jpg" class="heart_03" style="display: none;">
+							<img src="/resources/image/nolike.png" class="heart_04"> 
+						</c:if>
+						</c:if>
+						
+						&nbsp; <span class="span_heart">${vo.likecnt}</span>					
+						</div>
+						
+					</div>
 				</div>
 				<hr>
 
@@ -178,7 +329,7 @@ font-size: small;
 				</c:if>
 				
 				<div class="mb-3">
- 					 <label for="exampleFormControlTextarea1" class="form-label view_p_03">コメントを書いて見てください。</label>
+ 					 <label for="exampleFormControlTextarea1" class="form-label view_p_03">コメント</label>
  					 <textarea class="form-control text_01" id="exampleFormControlTextarea1" rows="3" name="replycontents"></textarea>
 				</div>
 				
@@ -192,7 +343,7 @@ font-size: small;
 						<input type="text" name="nicname" id="nicname">
 					</div>
 					<div class="col-6">
-						<span class="view_p_02">パスワード</span>
+						<span class="view_p_02">パスワード</span><br>
 						<input type="password" name="replypassword" id="replypassword">
 					</div>
 				</div>

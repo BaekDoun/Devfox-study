@@ -12,4 +12,5 @@ public class BoardVO {
 	private String nicname;
 	private String boardpassword;
 	private String readcnt;
+	private int likecnt;
 }
