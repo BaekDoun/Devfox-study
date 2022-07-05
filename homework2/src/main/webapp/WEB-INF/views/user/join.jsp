@@ -16,31 +16,26 @@
 //미입력 확인용 스크립트 함수 send()
 function send() {
 	if(user.username.value==""){
-		alert("ID를 입력해주세요");
+		alert("IDを入力してください。");
 		user.username.focus();
 		return false;
 	}
 	if (user.password.value=="") {
-		alert("패스워드를 입력하세요");
+		alert("パスワードを入力してください。");
 		user.password.focus();
 		return false;
 	}
 	if(user.email.value==""){
-		alert("이메일을 입력하세요");
+		alert("メールを入力してください。");
 		user.email.focus();
 		return false;
 	}if(user.tel.value==""){
-		alert("전화번호를 입력해주세요")
-		user.tel.focus();
-		return false;
-	}
-	if(user.tel.value==""){
-		alert("전화번호를 입력하세요");
+		alert("電話番号を入力してください。")
 		user.tel.focus();
 		return false;
 	}
 	if(user.nicname.value==""){
-		alert("닉네임을 입력하세요");
+		alert("ニックネームを入力してください。");
 		user.nicname.focus();
 		return false;
 	}
@@ -50,18 +45,18 @@ function send() {
 $(function(){
 	$("#username").on("blur",function(){
 		var username = $('#username').val();
-		//아이디는 4자리 부터 16자리 영어와 숫자 조합으로 생성가능하다.
-		//아이디는 정규식으로 유효성 검사를 진행한다.
+		//IDは4から16の英語と数字の組み合わせで生成できる。
+		//IDは正規式で有効性検査を行う。
 		var usernameExp = /^[a-z0-9_-]{4,16}$/;
 		if(!usernameExp.test(username)){
 			$(".id_check").css("color", "red");
 			$(".id_check").html("");
-			$(".id_check").html("아이디 형식이 맞지 않습니다");
+			$(".id_check").html("ID形式が正しくありません。");
 			$('#username').val('');
 			$('#username').focus();
 			return;
 		}
-		//유효성 검사 통과시 ajax를 이용한 비동기 전송으로 DB에 접속하여 중복된 아이디가 있는지 확인한다.
+		//有効性検査を通過すれば、ajaxを利用した非同期転送でDBに接続して重複したIDがあるかを確認する。
 		$.ajax({
 			type:'get',
 			url:'/user/usernamecheckpro.do?username=' + username,
@@ -69,12 +64,12 @@ $(function(){
 				if(result == 0){
 					$(".id_check").css("color", "green");
 					$(".id_check").html("");
-					$(".id_check").html("사용 가능한 아이디 입니다.");
+					$(".id_check").html("利用可能なIDです。");
 					$('#password').focus();
 				}else{
 					$(".id_check").css("color", "red");
 					$(".id_check").html("");
-					$(".id_check").html("이미 사용중인 아이디 입니다.");
+					$(".id_check").html("既に利用中のIDです。");
 					$('#username').val('');
 					$('#username').focus();
 				}
@@ -82,54 +77,54 @@ $(function(){
 			
 		})
 	}); 
-	//아이디 유효성 검사 끝
+	//ID有効性検査終了
 	
-	//비밀번호 유효성 검사
+	//パスワード有効性検査
 	$("#password").on("change", function(){
 		var password = $('#password').val();
 		var passwordExp = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/;
 		if(!passwordExp.test(password)){
 			$(".password_check").css("color", "red");
 			$(".password_check").html("");
-			$(".password_check").html("비밀번호 형식이 맞지 않습니다");
+			$(".password_check").html("パスワード形式が正しくありません。");
 			$('#password').val('');
 			$('#password').focus();
 			return;
 		}else{
 			$(".password_check").css("color", "green");
 			$(".password_check").html("");
-			$(".password_check").html("사용가능한 비밀번호 입니다.");
+			$(".password_check").html("使用可能なパスワードです。");
 			$('#repassword').focus();
 		}
 	})
 	
-	// 비밀번호 체크 - "input[name='repassword']" 를 이용하여 name의 value값을 가져오도록 해본다.
+	// パスワードチェック - "input[name='repassword']" を使って nameの valueを 持ってくる。.
 	$("input[name='repassword']").on("change", function(){
 		var password = $('#password').val();
 		var repassword = $('#repassword').val();
 		if(password != repassword){
 			$(".repassword_check").css("color", "red");
 			$(".repassword_check").html("");
-			$(".repassword_check").html("비밀번호가 일치하지 않습니다.");
+			$(".repassword_check").html("パスワードが正しくありません。");
 			$('#repassword').val('');
 			$('#repassword').focus();
 		}else{
 			$(".repassword_check").css("color", "green");
 			$(".repassword_check").html("");
-			$(".repassword_check").html("비밀번호가 일치합니다.");
+			$(".repassword_check").html("パスワードが正しいです。");
 			$('#email').focus();
 		}
 	})
-	//비밀번호 검사 끝
+	//パスワード検査終了
 	
-	//이메일 유효성 체크
+	//メール有効性チェック
 	$("#email").on("change", function(){
 		var email = $("#email").val();
 		var emailExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-z]{2,3}$/;
 		if(!emailExp.test(email)){
 			$(".email_check").css("color", "red");	
 			$(".email_check").html("");
-			$(".email_check").html("이메일 형식이 맞지 않습니다.");
+			$(".email_check").html("メール形式が正しくありません。");
 			$('#email').val('');
 			$('#email').focus();
 			return;
@@ -142,34 +137,34 @@ $(function(){
 				if(result == 0){
 					$(".email_check").css("color", "green");	
 					$(".email_check").html("");
-					$(".email_check").html("사용 가능한 이메일 입니다.");
+					$(".email_check").html("利用できるメールです。");
 					$("#tel").focus();
 				}else{
 					$(".email_check").css("color", "red");	
 					$(".email_check").html("");
-					$(".email_check").html("중복 등록된 이메일 입니다.");
+					$(".email_check").html("重複登録されたメールです。");
 					$('#email').focus();
 				}
 			}
 		})
 	})
-	//이메일 유효성 중복 체크 끝
+	//メール有効性重複チェック終了
 	
-	 //전화번호 유효성 검사
+	 //電話番号有効性検査
 	$("#tel").on("change",function(){
 		 var tel = $('#tel').val();
 		 var telExp = tel.split('-').join('');
-		 // -를 입력할 경우 ''로 바꾼다.
+		 // -を入力すると '　'に変える。.
 		 var telEXP = /^(010[0-9]{8})$/;
-		 // 정규식은 반드시 010이포함된 전화번호 11자리로 한다.
+		 // 正規式は必ず010が含まれた電話番号11桁とする。
 		 if(!telEXP.test(telExp)){
-			 //html로 바꾸지 않고 text를 이용하여 먼저 텍스트를 바꾸고 css변경을 해주도록 해본다.
-			 $(".tel_check").text("010을 포함한 8자리 입력");
+			 //htmlに変えなくて textを利用して 先に textを 変えて cssを変える。.
+			 $(".tel_check").text("010を含む8桁入力");
 			 $(".tel_check").css("color","red");
 			 $("#tel").val('');			 
 			 $("#tel").focus();
 		 }else{
-			 $(".tel_check").text("올바른 전화번호 입니다.");
+			 $(".tel_check").text("正しい電話番号です。");
 			 $(".tel_check").css("color","green"); 
 		 }
 	 });
@@ -183,49 +178,49 @@ $(function(){
 		<div class="row">
 			<div class="col-4"></div>
 			<div class="col-4">
-				<h3 class="jointitle_01">회원가입</h3>
+				<h3 class="jointitle_01">会員登録</h3>
 				<!-- form 시작 -->
 				<!-- onsubmit의 경우 액션을 취하기 전에 먼저 지정된 스크립트를 실행 후 true값이 만족이 되면 action을 수행한다. -->
 				<form name="user" method="post" action="/user/userjoinpro.do" onsubmit="return send()">
 				<span><strong>ID</strong></span>
 				<input type="text" name="username" class="form-control" id="username" 
-				placeholder="아이디 입력해주세요" _mstplaceholder="274417" 
+				placeholder="ID" _mstplaceholder="274417" 
 				style="text-align: left;">
-				<p class="id_check">아이디를 입력해주세요</p>
+				<p class="id_check"></p>
 				
 				<span><strong>PASSWORD</strong></span>
 				<input type="password" name="password" class="form-control" id="password" 
-				placeholder="8~16자 영문,숫자,특수문자를 포함" _mstplaceholder="274417" 
+				placeholder="8~16文字、英語、数字、特殊文字" _mstplaceholder="274417" 
 				style="text-align: left;">
-				<p class="password_check">비밀번호를 입력해주세요</p>
+				<p class="password_check"></p>
 				
 				<span><strong>PASSWORD CHECK</strong></span>
 				<input type="password" name="repassword" class="form-control" id="repassword" 
-				placeholder="비밀번호를 확인해주세요" _mstplaceholder="274417" 
+				placeholder="パスワード確認" _mstplaceholder="274417" 
 				style="text-align: left;">
-				<p class="repassword_check">비밀번호를 확인해주세요</p>
+				<p class="repassword_check"></p>
 				
 				<span><strong>EMAIL</strong></span>
 				<input type="email" name="email" class="form-control" id="email" 
-				placeholder="이메일을 입력해주세요" _mstplaceholder="274417" 
+				placeholder="メール" _mstplaceholder="274417" 
 				style="text-align: left;">
-				<p class="email_check">이메일을 확인해주세요</p>
+				<p class="email_check"></p>
 				
 				<span><strong>TEL</strong></span>
 				<input type="tel" name="tel" class="form-control" id="tel" 
-				placeholder="휴대폰번호를 입력해주세요" _mstplaceholder="274417" 
+				placeholder="携帯番号" _mstplaceholder="274417" 
 				style="text-align: left;">
-				<p class="tel_check">휴대폰번호를 확인해주세요</p>
+				<p class="tel_check"></p>
 				
 				<span><strong>NICNAME</strong></span>
 				<input type="text" name="nicname" class="form-control" id="nicname" 
-				placeholder="닉네임을 입력해주세요" _mstplaceholder="274417" 
+				placeholder="ニックネーム" _mstplaceholder="274417" 
 				style="text-align: left;">
-				<p>닉네임을 확인해주세요</p>
+				<p></p>
 				
 				<div class="btn_01">
-				<button type="submit" class="btn btn-primary">회원가입</button>&nbsp;&nbsp;
-				<button type="button" class="btn btn-primary" onClick="history.back()">취소</button>
+				<button type="submit" class="btn btn-primary">会員登録</button>&nbsp;&nbsp;
+				<button type="button" class="btn btn-primary" onClick="history.back()">キャンセル</button>
 				</div>
 				
 				</form>

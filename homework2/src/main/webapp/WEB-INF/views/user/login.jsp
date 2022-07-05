@@ -14,47 +14,47 @@
 
 <script>
 	function logincheck(){
-		//만약 form태그 안에있는 username(ID)이 입력이 안되었으면 06/30
+		//もし、 formタグの中にある username(ID)が入力できなかったら 06/30
 		if(login.username.value==""){
-			//alert 를 이용하여 브라우저에 경고 메세지 출력
-			alert("아이디를 입력해주세요.");
-			//포커스를 ID로 이동시킴
+			//alert を使って ブラウザに警告メッセージを出力
+			alert("IDを入力してください。");
+			//フォーカスをIDに移動させる
 			login.username.focus();
-			//return false를이용하여 스크립트 실행을 멈춘다.
+			//return falseを使ってscriptを終える。
 			return;
 		}
 		if(login.password.value==""){
-			alert("비밀번호를 입력해주세요");
+			alert("パスワードを入力してください。");
 			login.password.focus();
 			return;
 		}
 		
-		//입력한 아이디
+		//ID
 		var username = $('#username').val();
-		//입력한 비밀번호
+		//PASSWORD
 		var password = $('#password').val();
-		//JSON 전송을 위한 data
+		//JSON 伝送のための data
 		var sendData = {"username": username, "password": password};
 		
-		//ajax 비동기 데이터 전송 06/30
+		//ajax 非同期データ伝送 06/30
 		$.ajax({
 			type: 'post',
 			url: '/user/PasswordCheck.do',
 			data: sendData,
 			success:function(result){
 				if(result==0){
-					alert("존재하지않는 아이디입니다.");
+					alert("存在しないIDです。");
 					$("#username").val("");
 					$("#password").val("");
 					$("#username").focus();
 					return;
 				}else if(result==1){
-					alert("비밀번호가 올바르지 않습니다.")
+					alert("パスワードが正しくありません。")
 					$("#password").val("");
 					$("#password").focus();
 					return;
 				}else{
-					//아이디와 비밀번호가 DB에 등록된 데이터와 모두 일치 할 시 전송하여 세션을 만들어 로그인한다.
+					//IDとパスワードがDBに登録されたデータとすべて一致した場合に送信してセッションを作ってログインする。
 					login.submit();
 				}
 			}		
@@ -70,19 +70,19 @@
 			<div class="col-4"></div>
 			<div class="col-4">
 				<h3 class="logo_01">DC Outside</h3>
-				<!-- 로그인 폼 -->
+				<!-- login　form -->
 				<form name="login" method="post" action="/user/loginpro.do">
-				<!-- 아이디입력창 -->
+				<!-- ID -->
 				<div class="form-floating">
      				<input type="text" class="form-control" id="username" name="username">
       				<label for="floatingInput">ID</label>
    				</div>
-   				<!-- 비밀번호 입력창 -->
+   				<!-- PASSWORD -->
    				<div class="form-floating">
      				<input type="password" class="form-control" id="password" name="password">
       				<label for="floatingInput">Password</label>
    				</div>
-   				<!-- 로그인버튼 -->
+   				<!-- BOTTON -->
    				<button class="w-100 btn btn-lg btn-primary btn_01" type="button" onClick="logincheck()">Login</button>
 				</form>
 			</div>
