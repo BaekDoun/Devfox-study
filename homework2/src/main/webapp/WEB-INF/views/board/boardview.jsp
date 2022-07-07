@@ -424,8 +424,8 @@ cursor: pointer;
 							</div>
 							</c:if>
 							
-							<input type="button" value="등록" onClick="rereplysend(${redive})">&nbsp;
-							<input type="button" value="취소" onClick="offdisplay(${redive})">&nbsp;
+							<input type="button" value="登録" onClick="rereplysend(${redive})">&nbsp;
+							<input type="button" value="キャンセル" onClick="offdisplay(${redive})">&nbsp;
 							
 						</form>
 						
