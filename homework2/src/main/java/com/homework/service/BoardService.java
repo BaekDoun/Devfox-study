@@ -21,6 +21,10 @@ public interface BoardService {
 	public void insertReply(ReplyVO vo);
 	//회원 reply 등록
 	public void logininsertReply(ReplyVO vo);
+	//비회원 rereply 등록
+	public void insertReply1(ReplyVO vo);
+	//회원 rereply 등록
+	public void logininsertReply1(ReplyVO vo);
 	//댓글 불러오기
 	public List<ReplyVO> getBoardReply(int boardidx);
 	//댓글 삭제하기

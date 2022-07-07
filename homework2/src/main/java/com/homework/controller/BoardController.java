@@ -300,17 +300,29 @@ public class BoardController {
  	//댓글 등록하기
  	@PostMapping("boardreplypro.do")
  	public String replyinsert(ReplyVO vo) {
+ 
  		if(vo.getReplypassword() != null) {
 			System.out.println("비회원이 등록하여 비밀번호를 암호화 하여 등록합니다.");
 			String securityPassword = UserSHA256.getSHA256(vo.getReplypassword());
-			vo.setReplypassword(securityPassword);			
-			service.insertReply(vo);
+			vo.setReplypassword(securityPassword);
+			if(vo.getParent()==0) {
+				service.insertReply(vo);								
+			}else {
+				//대댓글
+				service.insertReply1(vo);
+			}
+			return "redirect:/board/boardview.do?boardidx="+vo.getBoardidx()+"&sessionUseridx=0";
 		}else {
 			System.out.println("회원이 등록한 댓글이므로 비밀번호는 필요없습니다.");
-			service.logininsertReply(vo);
+			if(vo.getParent()==0) {
+				service.logininsertReply(vo);				
+			}else {
+				//대댓글
+				service.logininsertReply1(vo);
+			}
+			return "redirect:/board/boardview.do?boardidx="+vo.getBoardidx()+"&sessionUseridx="+vo.getUseridx();
 		}
  		
-		return "redirect:/board/boardview.do?boardidx="+vo.getBoardidx();
  	}
  	
  	@GetMapping("replysessiondelete.do")
@@ -319,7 +331,7 @@ public class BoardController {
  		System.out.println("boardidx : " + vo.getBoardidx());
  		service.replydeletepro(vo);
  		
- 		return "redirect:/board/boardview.do?boardidx="+vo.getBoardidx();
+ 		return "redirect:/board/boardview.do?boardidx="+vo.getBoardidx()+"&sessionUseridx=0";
  	}
  	
 	//댓글 삭제하기 비번 체크 새로 열기 07/03

@@ -74,6 +74,12 @@ height: 40px;
 object-fit: cover;
 cursor: pointer;
 }
+.reply_01{
+width: 40px;
+height: 40px;
+object-fit: cover;
+cursor: pointer;
+}
 
 
 </style>
@@ -122,40 +128,40 @@ cursor: pointer;
 	
 	function ondisplay(dive){
 		console.log("받은 매개변수" + dive);
-		$('#'+dive).show();
+		$("#"+dive).show();
 	}
 	function offdisplay(dive){
 		console.log("받은 매개변수" + dive);
-		$('#'+dive).hide();
+		$("#"+dive).hide();
 	}
 	
-	/* 대댓글 개발 도중 여러개의 폼이 생성되어 중복되는 input name="" 발생
-	해결방법 강구중
+	// 대댓글 개발 도중 여러개의 폼이 생성되어 중복되는 input name="" 발생
 	
-	function rereplysend(){
-		if(rereply.replycontents.value==""){
-			alert("내용을 입력해주세요");
-			rereply.replycontents.focus();
+	function rereplysend(dive){
+		if(rereply[dive].replycontents.value==""){
+			alert("内容を入力してください。");
+			rereply[dive].replycontents.focus();
 			return;
 		}
 		
 		var useridx = $(".useridx").val();
 		
 		if(useridx==0){
-			if(rereply.nicname.value==""){
-				alert("닉네임을 입력해주세요");
-				rereply.nicname.focus();
+			if(rereply[dive].nicname.value==""){
+				alert("ニックネームを入力してください。");
+				rereply[dive].nicname.focus();
 				return;
 			}
-			if(rereply.replypassword.value==""){
-				alert("비밀번호를 입력해주세요");
-				rereply.replypassword.focus();
+			if(rereply[dive].replypassword.value==""){
+				alert("パスワードを入力してください。");
+				rereply[dive].replypassword.focus();
 				return;
 			}
 		}
-		rereply.submit();
+		rereply[dive].submit();
 	}
-	*/
+	
+	
 	function replydelete1(replyidx, boardidx){
 		location.href='/board/replysessiondelete.do?replyidx='+replyidx+'&boardidx='+boardidx;
 	}
@@ -322,6 +328,7 @@ cursor: pointer;
 				<!-- コメント  -->
 				<form method="post" action="/board/boardreplypro.do" name="reply">
 				<input type="hidden" name="boardidx" value="${vo.boardidx}">
+				<input type="hidden" name="parent" value="0">
 				
 				<c:if test="${sessionUser.username != null}">
 					<input type="hidden" name="useridx" value="${sessionUser.useridx}" class="useridx">
@@ -339,7 +346,7 @@ cursor: pointer;
 				<input type="hidden" name="useridx" value="0" class="useridx">
 				<div class="row">
 					<div class="col-6">
-						<span class="view_p_02">ニックネーム</span>
+						<span class="view_p_02">ニックネーム</span><br>
 						<input type="text" name="nicname" id="nicname">
 					</div>
 					<div class="col-6">
@@ -362,17 +369,23 @@ cursor: pointer;
 				<p class="view_p_03">${cnt}のコメントがあります。</p>
 				</c:if>
 				
+				
+				<c:set var="redive" value="0"/>
 				<c:forEach var="list" items="${replylist}">
+				
 				<div class="reply_calss_01">
+					<c:if test="${list.replyidx != list.parent}">
+					<img  src="/resources/image/reply.png" class="reply_01">
+					</c:if>
 					<span class="span_01"><strong>${list.nicname}</strong>&nbsp;/&nbsp;${list.replyregdate}</span>
 					<pre class="span_01">${list.replycontents}</pre>
 					
 					<!-- 대댓글 달기 -->
-					<!--  
-					<c:if test="${list.parent==0}">
-					<input type="button" value="답글쓰기" onClick="ondisplay(${list.replyidx})">
+					 
+					<c:if test="${list.parent==list.replyidx}">
+					<input type="button" value="答文" onClick="ondisplay(${redive})">
 					</c:if>
-					-->
+					
 					<c:if test="${list.useridx eq sessionUser.useridx}">
 					<input type="button" value="削除" onClick="replydelete1(${list.replyidx},${list.boardidx })">
 					</c:if>
@@ -382,12 +395,10 @@ cursor: pointer;
 				</div>
 				
 					<!-- 대댓글을 달게 해준다.-->
-					<!-- 
-					<div id="${list.replyidx}" class="comment_Reply" style="display: none;">
-						
-						
-						 대댓글 폼 
-						<form name="rereply" method="post" action="/board/boardrereplypro.do">
+					
+					<div id="${redive}" class="comment_Reply" style="display: none;">
+						 
+						<form name="rereply" method="post" action="/board/boardreplypro.do">
 						<input type="hidden" name="boardidx" value="${vo.boardidx}">
 						<input type="hidden" name="parent" value="${list.replyidx}">
 						
@@ -400,26 +411,26 @@ cursor: pointer;
 						
 							<c:if test="${sessionUser.username == null}">
 							
-							 비회원일시 useridx 0으로 둔다.
 							<input type="hidden" name="useridx" value="0" class="useridx">
 							<div class="row">
 								<div class="col-6">
-									<span class="view_p_02">닉네임</span>
+									<span class="view_p_02">ニックネーム</span>
 									<input type="text" name="nicname" id="nicname">
 								</div>
 								<div class="col-6">
-									<span class="view_p_02">비밀번호</span>
+									<span class="view_p_02">パスワード</span>
 									<input type="password" name="replypassword" id="replypassword">
 								</div>
 							</div>
 							</c:if>
-							<input type="button" value="등록" onClick="rereplysend()">&nbsp;
-							<input type="button" value="취소" onClick="offdisplay(${list.replyidx})">&nbsp;
+							
+							<input type="button" value="등록" onClick="rereplysend(${redive})">&nbsp;
+							<input type="button" value="취소" onClick="offdisplay(${redive})">&nbsp;
 							
 						</form>
 						
 					</div>
-					 -->
+					<c:set var="redive" value="${redive+1}"/>
 				</c:forEach>
 				  
 			</div>

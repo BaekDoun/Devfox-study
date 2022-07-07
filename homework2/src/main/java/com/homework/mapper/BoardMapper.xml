@@ -45,9 +45,18 @@
  		<selectKey keyProperty="replyidx" order="BEFORE" resultType="int">
         	 select reply_seq.nextval from dual
         </selectKey>
- 		insert into tbl_reply (replyidx,boardidx,useridx,nicname,replypassword,replycontents)
+ 		insert into tbl_reply (replyidx,boardidx,useridx,nicname,replypassword,replycontents,parent)
         values
-        (#{replyidx},#{boardidx},#{useridx},#{nicname},#{replypassword},#{replycontents})
+        (#{replyidx},#{boardidx},#{useridx},#{nicname},#{replypassword},#{replycontents},#{replyidx})
+ 	</insert>
+ 	 <!-- 비회원 대댓글 등록하기 -->
+ 	<insert id="insertReply1">
+ 		<selectKey keyProperty="replyidx" order="BEFORE" resultType="int">
+        	 select reply_seq.nextval from dual
+        </selectKey>
+ 		insert into tbl_reply (replyidx,boardidx,useridx,nicname,replypassword,replycontents,parent)
+        values
+        (#{replyidx},#{boardidx},#{useridx},#{nicname},#{replypassword},#{replycontents},#{parent})
  	</insert>
  	
  	<!-- 회원 댓글 등록하기 -->
@@ -55,16 +64,28 @@
  		<selectKey keyProperty="replyidx" order="BEFORE" resultType="int">
         	 select reply_seq.nextval from dual
         </selectKey>
- 		insert into tbl_reply (replyidx,boardidx,useridx,nicname,replycontents)
+ 		insert into tbl_reply (replyidx,boardidx,useridx,nicname,replycontents,parent)
         values
-        (#{replyidx},#{boardidx},#{useridx},#{nicname},#{replycontents})
+        (#{replyidx},#{boardidx},#{useridx},#{nicname},#{replycontents},#{replyidx})
  	</insert>
+ 	<!-- 회원 대댓글 등록하기 -->
+ 	<insert id="logininsertReply1">
+ 		<selectKey keyProperty="replyidx" order="BEFORE" resultType="int">
+        	 select reply_seq.nextval from dual
+        </selectKey>
+ 		insert into tbl_reply (replyidx,boardidx,useridx,nicname,replycontents,parent)
+        values
+        (#{replyidx},#{boardidx},#{useridx},#{nicname},#{replycontents},#{parent})
+ 	</insert>
+ 	
  	
  	<!-- 게시판 view 댓글 불러오기 -->
  	<select id="getBoardReply" resultType="com.homework.domain.ReplyVO">
- 		select * from tbl_reply 
+ 		select * from
+ 		(select * from tbl_reply 
  		where boardidx=#{boardidx}
- 		order by replyregdate asc
+ 		order by replyregdate asc)
+ 		order by parent asc,replyregdate asc
  	</select>
  	
  	<!-- 댓글 삭제하기 -->

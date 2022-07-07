@@ -99,4 +99,12 @@ public class BoardServiceImpl implements BoardService {
 	public void heartdeletepro(HeartVO vo) {
 		mapper.heartdeletepro(vo);
 	}
+	@Override
+	public void insertReply1(ReplyVO vo) {
+		mapper.insertReply1(vo);	
+	}
+	@Override
+	public void logininsertReply1(ReplyVO vo) {
+		mapper.logininsertReply1(vo);	
+	}
 }
