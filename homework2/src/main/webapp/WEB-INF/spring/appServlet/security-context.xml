@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- security-context.xml 파일을 만들면 생성 되는 beans 5.0 버전이 체크되어있음 07/12-->
+<!-- 5.0버전이 적혀있으면 아래의 security:http 에서 에러가 발생하므로 버전을 지워준다. -->
+<!-- 팀프로젝트를 진행할 시 버전을 적지않고 수동으로 추가했지만 현재는 next버튼을 이용하여 
+beans와 security를 체크하여 security-context.xml파일을 만들었다 -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<!-- 비밀번호 암호화 객체-->
+	<bean id="bcryPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+	<!-- 로그인 성공시 사용할 핸들러 객체-->
+	<bean id="CustomLoginSuccess" class="com.homework.security.CustomLoginSuccessHandler"/>
+	
+	<!-- 로그인 암호화 관련 -->
+	<bean id="CustomUserDetailsService" class="com.homework.security.CustomUserDetailsService"/>
+			
+	<security:http>
+		<!--  <security:form-login/>  -->
+		<!-- 스프링 시큐리티는 자체적으로 제공하는 로그인 폼이 존재한다. username password -->
+		<security:form-login login-page="/user/login.do" authentication-success-handler-ref="CustomLoginSuccess"/>
+		<!-- 로그아웃 url 성공하면 인덱스로 가게 url / 로 설정 -->
+		<security:logout logout-url="/user/logout.do" invalidate-session="true" logout-success-url="/"/>
+	</security:http>
+	
+	<!-- 권한을 관리하는 시큘리트 -->
+	<security:authentication-manager>
+		<security:authentication-provider user-service-ref="CustomUserDetailsService">
+			<!-- 암호화된 비밀번호 비교 -->
+			<security:password-encoder ref="bcryPasswordEncoder"/>
+		</security:authentication-provider>
+	</security:authentication-manager>
+	
+
+</beans>

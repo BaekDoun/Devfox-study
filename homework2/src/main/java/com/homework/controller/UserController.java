@@ -1,12 +1,11 @@
 package com.homework.controller;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +26,11 @@ import lombok.extern.log4j.Log4j;
 public class UserController {
 	@Autowired
 	private UserService service;
+	
+	//스프링 시큐리티에서 지원하는 패스워드 인코더
+	//같은 비밀번호를 입력해도  암호화된 비밀번호는 다르게 설정된다
+	@Autowired
+	private PasswordEncoder passwordencoder;
 	
 	
 	//로그인창으로 이동
@@ -58,7 +62,11 @@ public class UserController {
 	@PostMapping("userjoinpro.do")
 	public String UserInsertPro(UserVO vo) {
 		//sha256을 이용한 비밀번호 암호화 --추후 시큐리티로 암호화 한다. 지금은 세션을 사용할것이기 때문  06/29
-		String securityPassword = UserSHA256.getSHA256(vo.getPassword());
+		//String securityPassword = UserSHA256.getSHA256(vo.getPassword());
+		
+		//스프링 시큐리티 passwordencoder를 이용한 비밀번호 암호화 07/13
+		String securityPassword = passwordencoder.encode(vo.getPassword());
+		
 		//암호화된 비밀번호를 다시 vo에 담는다. 06/30
 		vo.setPassword(securityPassword);
 		service.UserInsert(vo);
@@ -94,6 +102,7 @@ public class UserController {
 	}
 	
 	//아이디와 비밀번호가 일치할겅우 세션을 만들어 서버에 저장하여 로그인 상태로 관주한다. 06/30
+	//시큐리티 login-form에서 처리하기 때문에 해당 메서드로 세션을 만들지 않는다. 주석처리는 우선 하지 않는다. 07/12
 	@PostMapping("loginpro.do")
 	public String LoginPro(UserVO vo, HttpSession session, Model model) {
 		UserVO loginVo = service.readUser(vo.getUsername());
@@ -104,9 +113,11 @@ public class UserController {
 	
 	@GetMapping("logout.do")
 	public String Logout(HttpServletRequest request) {
+		/*
+		세션을 이용하여 로그아웃했을때 시큐리티 공부로 인해 주석처리
 		HttpSession session = request.getSession();
 		session.invalidate();
-		
+		*/
 		return "redirect:/";
 	}
 }
