@@ -4,12 +4,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib uri="http://www.springframework.org/security/tags"
+	prefix="sec"%>
 
 <!DOCTYPE html>
 
-<!-- 부트스트랩 합치기 -->
-
-<html lang="ko">
+<html lang="UTF-8">
 <head>
 
 <style>
@@ -46,22 +46,56 @@
         </li>
 		
 		<!--비회원에게만 회원가입 이동 칼럼이 보이게 한다. 로그인을 하면 비활성화 06/30-->
+		<!--  
 		<c:if test="${sessionUser.username == null}">
      	<li class="nav-item">
           <a class="nav-link active" aria-current="page" href="/user/join.do">Join</a>
         </li>
 		</c:if>
+		-->
+		
+		<!--시큐리티로 로그인한 유저와 비회원유저 판단 메뉴 활성화 07/13-->
+		<sec:authorize access="isAnonymous()">
+     	<li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/user/join.do">Join</a>
+        </li>
+		</sec:authorize>
 		
         <li class="nav-item">
+        
           <!--비회원에게만 로그인  칼럼이 보이게 한다. 로그인을 하면 비활성화  06/30-->
+      	  <!--  
           <c:if test="${sessionUser.username == null}">
           <a class="nav-link active" aria-current="page" href="/user/login.do">Login</a>
           </c:if>
+          -->
+      
+          <!--시큐리티로 로그인한 유저와 비회원유저 판단 메뉴 활성화 07/13-->
+          <sec:authorize access="isAnonymous()">
+          <a class="nav-link active" aria-current="page" href="/user/login.do">Login</a>
+          </sec:authorize>
+         
           <!-- 로그인을 하면 로그아웃 칼럼이 활성화 된다. 06/30 -->
+          <!--  
           <c:if test="${sessionUser.username != null}">
           <a class="nav-link active" aria-current="page" href="/user/logout.do">Logout</a>
           </c:if>
+          -->
           
+          <!--시큐리티로 로그인한 유저와 비회원유저 판단 메뉴 활성화 07/13-->
+          <sec:authorize access="isAuthenticated()">
+          <form name="logout" action="/user/logout.do" method="post">
+          	<!-- 시큐리티로 인해 토큰을 항상 보내주어야한다. 07/13 -->
+          	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+          	<a class="nav-link active" aria-current="page" href="javascript:logout_01();">Logout</a>
+          </form>
+          </sec:authorize>
+          
+          <script>
+          	function logout_01(){
+          		logout.submit();
+          	}
+          </script>
         </li>
       </ul>
     </div>

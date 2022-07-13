@@ -29,13 +29,29 @@ a{text-decoration: none;}
 				<div class="row">
 					<div class="col-10">
 						<!-- JSTL c: 테스를 이용하여 로그인한 유저와 비회원에게 나타나는 텍스트를 설정 -->
-						<c:if test="${sessionUser.username == null}">
+						
+						<!-- 세션 이용시 -->
+						<!--
+						<c:if test="${sessionUser.useridx == null}">	
 						<p class="p_01">非会員で利用しています。</p>
 						</c:if>
+						-->
 						
-						<c:if test="${sessionUser.username != null}">
+						<sec:authorize access="isAnonymous()">
+						<p class="p_01">非会員で利用しています。</p>
+						</sec:authorize>
+						
+						<!-- 세션 이용시 -->
+						<!--
+						<c:if test="${sessionUser.useridx != null}">
 						<p class="p_01">${sessionUser.nicname}様ようこそ!</p>
 						</c:if>
+						-->
+
+						<sec:authorize access="isAuthenticated()">
+						<p class="p_01"><sec:authentication property='principal.user.nicname'/>様ようこそ!</p>
+						</sec:authorize>
+						
 					</div>
 					<div class="col-2">
 						<button type="button" class="btn btn-primary btn_01" onCLick="goWrite()">作成</button>					
@@ -60,12 +76,27 @@ a{text-decoration: none;}
 					<tr>
 						<td>${cnt}</td>
 						<td>
+						<!--  
 						<c:if test="${sessionUser.useridx != null}">
 						<a href="/board/boardview.do?boardidx=${list.boardidx}&sessionUseridx=${sessionUser.useridx}">${list.title}</a>
 						</c:if>
+						-->
+						
+						<!-- 시큐리티로  유저 idx get으로 보내기  07/13 -->
+						<sec:authorize access="isAuthenticated()">
+						<a href="/board/boardview.do?boardidx=${list.boardidx}&sessionUseridx=<sec:authentication property='principal.user.useridx'/>">${list.title}</a>
+						</sec:authorize>
+						
+						<!-- 세션 -->
+						<!--  
 						<c:if test="${sessionUser.useridx == null}">
 						<a href="/board/boardview.do?boardidx=${list.boardidx}&sessionUseridx=0">${list.title}</a>
 						</c:if>
+						-->
+						
+						<sec:authorize access="isAnonymous()">
+						<a href="/board/boardview.do?boardidx=${list.boardidx}&sessionUseridx=0">${list.title}</a>
+						</sec:authorize>
 						</td>
 						<td>${list.nicname}</td>
 						<td>${list.readcnt}</td>
