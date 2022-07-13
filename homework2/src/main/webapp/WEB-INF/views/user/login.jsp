@@ -62,6 +62,15 @@
 		
 	}
 	
+	//script에서 form태그 속성을 지정하고 서브밋한다.
+	$(function() {
+		$(".btn_01").on("click", function(){
+			$("#frmLogin").attr("action","/login");
+			$("#frmLogin").attr("method","post");
+			$("#frmLogin").submit();
+		});
+	});	
+	
 </script>
 <!-- sub contents start-->
 <div class="container-fluid">
@@ -71,7 +80,17 @@
 			<div class="col-4">
 				<h3 class="logo_01">DC Outside</h3>
 				<!-- login　form -->
+				
+				<!--  
 				<form name="login" method="post" action="/user/loginpro.do">
+				-->
+				
+				<!-- 스프링에서 지원하는 로그인창으로 username과 패스워드를 보낸다. -->
+				<form id="frmLogin" name="login">
+				
+				<!-- 스프링 시큐리티를 이용하여 로그인을 하면 토큰읇 보내줘야 한다. 07/13 -->
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+				
 				<!-- ID -->
 				<div class="form-floating">
      				<input type="text" class="form-control" id="username" name="username">
@@ -83,7 +102,10 @@
       				<label for="floatingInput">Password</label>
    				</div>
    				<!-- BOTTON -->
+   				<!--  
    				<button class="w-100 btn btn-lg btn-primary btn_01" type="button" onClick="logincheck()">Login</button>
+   				-->
+   				<button class="w-100 btn btn-lg btn-primary btn_01" type="button" >Login</button>
 				</form>
 			</div>
 			<div class="col-4"></div>

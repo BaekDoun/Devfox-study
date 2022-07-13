@@ -23,14 +23,14 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 		});
 		
 		if(roleNames.contains("ROLE_ADMIN")) {
-			response.sendRedirect("/admin/adminlist.do");
+			response.sendRedirect("/");
 			return;
 		}
 		if(roleNames.contains("ROLE_MEMBER")) {
-			response.sendRedirect("/admin/adminlist.do");
+			response.sendRedirect("/");
 			return;
 		}
-		response.sendRedirect("/index.do");
+		response.sendRedirect("/");
 		
 	}
 

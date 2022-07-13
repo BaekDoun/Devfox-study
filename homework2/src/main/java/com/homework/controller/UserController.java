@@ -51,6 +51,7 @@ public class UserController {
 		System.out.println("controller return : " + service.UsernameCheckPro(vo));
 		return result;
 	}
+	
 	//회원가입이메일 체크 06/29
 	@GetMapping("emailcheckpro.do")
 	public 	@ResponseBody int EmailCheckpro(UserVO vo){
@@ -69,6 +70,7 @@ public class UserController {
 		
 		//암호화된 비밀번호를 다시 vo에 담는다. 06/30
 		vo.setPassword(securityPassword);
+		
 		service.UserInsert(vo);
 		return "redirect:/user/login.do";
 	}

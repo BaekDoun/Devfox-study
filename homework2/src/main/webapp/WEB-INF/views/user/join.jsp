@@ -182,6 +182,10 @@ $(function(){
 				<!-- form 시작 -->
 				<!-- onsubmit의 경우 액션을 취하기 전에 먼저 지정된 스크립트를 실행 후 true값이 만족이 되면 action을 수행한다. -->
 				<form name="user" method="post" action="/user/userjoinpro.do" onsubmit="return send()">
+				
+				<!-- 시큐리티로 인해 토큰을 보내주지 않으면 에러가 뜬다. 07/13 -->
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+				
 				<span><strong>ID</strong></span>
 				<input type="text" name="username" class="form-control" id="username" 
 				placeholder="ID" _mstplaceholder="274417" 
