@@ -26,6 +26,15 @@ function checkpassword(){
 	var boardidx = $("#boardidx").val();
 	var sendData = {'nicname':nicname, 'heartpassword':heartpassword, 
 			'heartcookie':heartcookie, 'boardidx':boardidx};
+	
+	//security ajax token 
+	var csrfHeaderName = "${_csrf.headerName}";
+    var csrfTokenValue = "${_csrf.token}";
+    
+    $(document).ajaxSend(function(e,xhr,options){
+    xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+    })
+	
 	$.ajax({
 		type:'post',
 		url:'/board/heartpasscheck.do',
@@ -46,6 +55,7 @@ function checkpassword(){
 
 <p class="delete_01">nicname, passwordを入力してください。</p>
 <form name="heartdelete" method="post" action="/board/heartdeletepro.do">
+<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 <div class="delete_01">
 nicname<input type="text" name="nicname" id="nicname" >
 password<input type="password" name="heartpassword" id="heartpassword" >

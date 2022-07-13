@@ -56,11 +56,20 @@ function send(){
 	
 	var useridx = $("#useridx").val();
 	//var 関数は同じ function{} 中でのみ適用可能地域変数概念 07/03
-	alert(useridx);
+
 	if(useridx == 0){
 		var boardidx = $("#boardidx").val();
 		var boardpassword = $("#boardpassword").val();
 		var sendData = {"boardidx": boardidx, "boardpassword": boardpassword};
+		
+		//security ajax token 
+		var csrfHeaderName = "${_csrf.headerName}";
+        var csrfTokenValue = "${_csrf.token}";
+        
+        $(document).ajaxSend(function(e,xhr,options){
+        xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+        })
+        
 		$.ajax({
 			type:'post',
 	        url:'/board/boardpasswordcheck.do',
@@ -96,17 +105,32 @@ function send(){
 	              <h3 class="title_01">修正</h3>
 				  <!-- form -->
 	              <form name="modi" method="post" action="/board/boardmodifypro.do">
+				  <!-- spring security 를 사용하면 토큰을 보내주어야한다 안보낼시 403error 발생 07/14-->
+				  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+				  
 				  <input type="hidden" name="boardidx" id="boardidx" value="${vo.boardidx}">
 				  <!-- 会員の場合　session情報を　	hiddenで 送る -->
+				  <!-- 
 	              <c:if test="${sessionUser.username != null}">
 	              <input type="hidden" name="useridx" value="${sessionUser.useridx}" id="useridx">
 	              <input type="hidden" name="nicname" value="${sessionUser.nicname}">
 	              </c:if>
+	              -->
+	              <sec:authorize access="isAuthenticated()">
+	              <input type="hidden" name="useridx" value="${sessionUser.useridx}" id="useridx">
+	              <input type="hidden" name="nicname" value="${sessionUser.nicname}">
+	              </sec:authorize>
 	              
 	              <!-- 非会員の場合 hiddenで useridxを ""で 設定 -->
+	              <!-- 
 	              <c:if test="${sessionUser.username == null}">
 	              <input type="hidden" name="useridx" value="0" id="useridx">
 	              </c:if>
+	               -->
+	               
+	              <sec:authorize access="isAnonymous()">
+	              <input type="hidden" name="useridx" value="0" id="useridx">
+	              </sec:authorize>
 	              
 	              <!-- title -->
 	              <div class="input-group has-validation title_02">
@@ -121,20 +145,38 @@ function send(){
 	              </div>
 	              
 	              <!-- ログインしてない場合ニックネームを入力　 -->
+	              <!--  
 	              <c:if test="${sessionUser.username == null}">
 	               <div class="input-group has-validation title_02">
 	                <span class="input-group-text input_01">ニックネーム</span>
 	                <input type="text" class="form-control" id="nicname" name="nicname" value="${vo.nicname }">
 	              </div>
 	              </c:if>
+				  -->
+				  <sec:authorize access="isAnonymous()">
+	              <div class="input-group has-validation title_02">
+	                <span class="input-group-text input_01">ニックネーム</span>
+	                <input type="text" class="form-control" id="nicname" name="nicname" value="${vo.nicname }">
+	              </div>
+	              </sec:authorize>
 	              
-	               <!-- 非会員の場合パスワード入力 -->
+	              <!-- 非会員の場合パスワード入力 -->
+				  <!--  
 	              <c:if test="${sessionUser.username == null}">
 	              <div class="input-group has-validation title_02">
 	                <span class="input-group-text input_01">パスワード</span>
 	                <input type="text" class="form-control" id="boardpassword" name="boardpassword">
 	              </div>
 	              </c:if>
+				  -->
+				  
+				  <sec:authorize access="isAnonymous()">
+	              <div class="input-group has-validation title_02">
+	                <span class="input-group-text input_01">パスワード</span>
+	                <input type="text" class="form-control" id="boardpassword" name="boardpassword">
+	              </div>
+	              </sec:authorize>
+	              
 	              <!-- ボタン -->
 	              <div class="btn_01">
 				  	<button type="button" class="btn btn-primary" onClick="send()">修正</button>&nbsp;&nbsp;

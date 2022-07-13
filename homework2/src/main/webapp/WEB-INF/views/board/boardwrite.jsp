@@ -67,17 +67,29 @@ function send(){
 	              <h3 class="title_01">Write</h3>
 				  <!-- form -->
 	              <form name="write" method="post" action="/board/boardwritepro.do" onsubmit="return send()">
+				  <!-- spring security 를 사용하면 토큰을 보내주어야한다 안보낼시 403error 발생 -->
+				  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 				  
 				  <!-- ログインしたユーザーであればセッションにある情報をhiddenで送る。 -->
+				  <!-- session -->
+				  <!--  
 	              <c:if test="${sessionUser.username != null}">
 	              <input type="hidden" name="useridx" value="${sessionUser.useridx}" id="useridx">
 	              <input type="hidden" name="nicname" value="${sessionUser.nicname}">
 	              </c:if>
+	              -->
+	              
+	              <!-- security -->
+	              <sec:authorize access="isAuthenticated()">
+	              <input type="hidden" name="useridx" value="<sec:authentication property='principal.user.useridx'/>" id="useridx">
+	              <input type="hidden" name="nicname" value="<sec:authentication property='principal.user.nicname'/>">
+	              </sec:authorize>
 	              
 	              <!-- 非会員の場合 useridxを ""で設定 -->
-	              <c:if test="${sessionUser.username == null}">
+	              <!-- security -->
+	              <sec:authorize access="isAnonymous()">
 	              <input type="hidden" name="useridx" value="0" id="useridx">
-	              </c:if>
+	              </sec:authorize>
 	              
 	              <!-- title -->
 	              <div class="input-group has-validation title_02">
@@ -92,20 +104,43 @@ function send(){
 	              </div>
 	              
 	              <!-- 非会員ニックネーム-->
+	              <!-- session -->
+	              <!--  
 	              <c:if test="${sessionUser.username == null}">
-	               <div class="input-group has-validation title_02">
+	              <div class="input-group has-validation title_02">
 	                <span class="input-group-text input_01">ニックネーム</span>
 	                <input type="text" class="form-control" id="nicname" name="nicname">
 	              </div>
 	              </c:if>
+	              -->
+	              <!-- security -->
+	              <sec:authorize access="isAnonymous()">
+	              <div class="input-group has-validation title_02">
+	                <span class="input-group-text input_01">ニックネーム</span>
+	                <input type="text" class="form-control" id="nicname" name="nicname">
+	              </div>
+	              </sec:authorize>
 	              
-	               <!-- 非会員パスワード -->
+	              <!-- 非会員パスワード -->
+	              
+	              <!-- session -->
+	              <!--   
 	              <c:if test="${sessionUser.username == null}">
 	              <div class="input-group has-validation title_02">
 	                <span class="input-group-text input_01">パスワード</span>
 	                <input type="text" class="form-control" id="boardpassword" name="boardpassword">
 	              </div>
 	              </c:if>
+	              -->
+	              
+	              <!-- security -->
+	              <sec:authorize access="isAnonymous()">
+	              <div class="input-group has-validation title_02">
+	                <span class="input-group-text input_01">パスワード</span>
+	                <input type="text" class="form-control" id="boardpassword" name="boardpassword">
+	              </div>
+	              </sec:authorize>
+	              
 	              <!-- ボタン -->
 	              <div class="btn_01">
 				  	<button type="submit" class="btn btn-primary">登録</button>&nbsp;&nbsp;

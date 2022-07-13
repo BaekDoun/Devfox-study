@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +20,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.homework.domain.BoardVO;
 import com.homework.domain.HeartVO;
 import com.homework.domain.ReplyVO;
-import com.homework.security.UserSHA256;
 import com.homework.service.BoardService;
+import com.homework.service.UserService;
 
 import lombok.extern.log4j.Log4j;
 
@@ -29,6 +31,12 @@ import lombok.extern.log4j.Log4j;
 public class BoardController {
 	@Autowired
 	BoardService service;
+	
+	@Autowired
+	UserService userservice;
+	
+	@Autowired
+	PasswordEncoder passwordencoder;
 	
 	@GetMapping("boardwrite.do")
 	public void goWrite() {
@@ -46,7 +54,10 @@ public class BoardController {
 		// 비회원이 등록한 경우 즉, 비밀번호가 null이 아니면 암호화 수행
 		if(vo.getBoardpassword() != null) {
 			System.out.println("비회원이 등록하여 비밀번호를 암호화 하여 등록합니다.");
-			String securityPassword = UserSHA256.getSHA256(vo.getBoardpassword());
+			//SHA256
+			//String securityPassword = UserSHA256.getSHA256(vo.getBoardpassword());
+			//security passwordencoder
+			String securityPassword = passwordencoder.encode(vo.getBoardpassword());
 			vo.setBoardpassword(securityPassword);			
 			service.insertBoard(vo);
 		}else {
@@ -62,6 +73,7 @@ public class BoardController {
 			@RequestParam int sessionUseridx,
 			HttpServletRequest request, HttpServletResponse response){
 		System.out.println(vo.getBoardidx());
+		System.out.println(sessionUseridx);
 			
 		//cookie를 이용하여 조회수 중복 증가 불가로 만들기
 		Cookie[] cookies = request.getCookies();
@@ -139,12 +151,13 @@ public class BoardController {
 			}
 			
 		}
-		 
+	
 		BoardVO realvo = service.getBoardVo(vo);
 		System.out.println("vo가져오기 끝남");
 		List<ReplyVO> list = service.getBoardReply(vo.getBoardidx());
 		int replycnt = service.cntreply(vo.getBoardidx());
 		model.addAttribute("vo",realvo);
+		model.addAttribute("sessionuseridx", sessionUseridx);
 		model.addAttribute("cnt",replycnt);
 		model.addAttribute("replylist",list);
 		
@@ -261,9 +274,13 @@ public class BoardController {
 		System.out.println(vo.getBoardidx());
 		System.out.println(vo.getBoardpassword());
 		BoardVO checkvo = service.getBoardVo(vo);
-		//전송받은 비밀번호 암호화 
-		String securityPassword = UserSHA256.getSHA256(vo.getBoardpassword());
-		if(checkvo.getBoardpassword().equals(securityPassword)) {
+		//전송받은 비밀번호 암호화
+		
+		//session
+		//String securityPassword = UserSHA256.getSHA256(vo.getBoardpassword());
+		
+		//입력한 비밀버호와 암호화된 비밀번호를 복호화 하여 비교한다. 07/14
+		if(passwordencoder.matches(vo.getBoardpassword(), checkvo.getBoardpassword())) {
 			return 1;
 		}else {
 			return 0;			
@@ -303,7 +320,10 @@ public class BoardController {
  
  		if(vo.getReplypassword() != null) {
 			System.out.println("비회원이 등록하여 비밀번호를 암호화 하여 등록합니다.");
-			String securityPassword = UserSHA256.getSHA256(vo.getReplypassword());
+			//SHA256
+			//String securityPassword = UserSHA256.getSHA256(vo.getReplypassword());
+			//security password encoder
+			String securityPassword = passwordencoder.encode(vo.getReplypassword());
 			vo.setReplypassword(securityPassword);
 			if(vo.getParent()==0) {
 				service.insertReply(vo);								
@@ -349,8 +369,9 @@ public class BoardController {
 		
 		ReplyVO checkvo = service.getReplyVO(vo);
 		//전송받은 비밀번호 암호화 
-		String securityPassword = UserSHA256.getSHA256(vo.getReplypassword());
-		if(checkvo.getReplypassword().equals(securityPassword)) {
+		//String securityPassword = UserSHA256.getSHA256(vo.getReplypassword());
+		
+		if(passwordencoder.matches(vo.getReplypassword(), checkvo.getReplypassword())) {
 			return 1;
 		}else {
 			return 0;			

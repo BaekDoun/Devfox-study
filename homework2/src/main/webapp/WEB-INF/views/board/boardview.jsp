@@ -176,6 +176,14 @@ cursor: pointer;
 			var boardidx = ${vo.boardidx};
 			var sendData = {'useridx':useridx, 'boardidx':boardidx};
 			
+			//security ajax token 
+			var csrfHeaderName = "${_csrf.headerName}";
+	        var csrfTokenValue = "${_csrf.token}";
+	        
+	        $(document).ajaxSend(function(e,xhr,options){
+	        xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+	        })
+	        
 			$.ajax({
 				url:'/board/heartup.do',
 				data:sendData,
@@ -209,6 +217,14 @@ cursor: pointer;
 			var boardidx = ${vo.boardidx};
 			var sendData = {'useridx':useridx, 'boardidx':boardidx};
 			
+			//security ajax token 
+			var csrfHeaderName = "${_csrf.headerName}";
+	        var csrfTokenValue = "${_csrf.token}";
+	        
+	        $(document).ajaxSend(function(e,xhr,options){
+	        xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+	        })
+	        
 			$.ajax({
 				url:'/board/heartdown.do',
 				data:sendData,
@@ -273,7 +289,11 @@ cursor: pointer;
 						<div class="image_div_01">
 						
 						<!-- 회원의 경우 -->
-						<c:if test="${sessionUser.useridx != null}">
+						<!--  
+						<sec:authorize access="isAuthenticated()">
+						-->
+						
+						<c:if test="${sessionuseridx != 0}">
 						<input type="hidden" value="" name="cookie" class="heartcookie">
 						<c:if test="${heartSwich eq 'yes'}">
 							<img src="/resources/image/like.jpg" class="heart_01">
@@ -285,10 +305,17 @@ cursor: pointer;
 						</c:if>
 						</c:if>
 						
+						<!-- 
+						</sec:authorize>
+						 -->
+						 
 						<!-- --------------------------------- -->
 						
 						<!-- 비회원인 경우 -->
+						<!--  
 						<c:if test="${sessionUser.useridx == null}">
+						-->
+						<sec:authorize access="isAnonymous()">
 						<input type="hidden" value="${heartcookie}" name="cookie" class="heartcookie">
 						<c:if test="${heartSwich eq 'yes'}">
 							<img src="/resources/image/like.jpg" class="heart_03">
@@ -298,7 +325,10 @@ cursor: pointer;
 							<img src="/resources/image/like.jpg" class="heart_03" style="display: none;">
 							<img src="/resources/image/nolike.png" class="heart_04"> 
 						</c:if>
+						</sec:authorize>
+						<!-- 
 						</c:if>
+						-->
 						
 						&nbsp; <span class="span_heart">${vo.likecnt}</span>					
 						</div>
@@ -311,29 +341,56 @@ cursor: pointer;
 				  	<button type="button" class="btn btn-primary" onClick="history.back()">リスト</button>&nbsp;&nbsp;
 				  	
 				  	<!-- 修正と削除は作成したユーザーとログインしたユーザーが同じ時に活性化する。 07/01 -->
-				  	<c:if test="${vo.useridx eq sessionUser.useridx}">
+				  	
+				  	<!-- 로그인한 유저의 idx 를 c:set을 이용하여  선언-->
+				  	<sec:authorize access="isAuthenticated()">
+				  	<c:set var="loginuseridx" value="<sec:authentication property='principal.user.useridx'/>"/>
+				  	</sec:authorize>
+				  	<!-- 비회원이면 idx 0 -->
+				  	<sec:authorize access="isAnonymous()">
+				  	<c:set var="loginuseridx" value="0"/>
+				  	</sec:authorize>
+				  	
+				  	<sec:authorize access="isAuthenticated()">
+				  	<c:if test="${vo.useridx eq sessionuseridx}">
 				  	<button type="button" class="btn btn-primary" onClick="modify()">修正</button>&nbsp;&nbsp;
 				  	<button type="button" class="btn btn-primary" onClick="sessiondelete()">削除</button>
 				  	</c:if>
+				  	</sec:authorize>
+				  	<!--  
+				  	<c:if test="${vo.useridx eq sessionUser.useridx}">
+				  	</c:if>
+				  	-->
 				  	
 				  	<!-- 非会員が作成した場合、useridxが0と保存されるようにしたため、ログインしていないユーザーであり、useridxが0の文は誰でも修正可能である。
 				  	しかし、修正する時は登録する時に入力したパスワードを入力しなければ修正できないようにする。-->
-				  	<c:if test="${vo.useridx == 0 and sessionUser.useridx == null}">
+				  	<sec:authorize access="isAnonymous()">
+				  	<c:if test="${vo.useridx == 0 and sessionuseridx==0 }">
 				  	<button type="button" class="btn btn-primary" onClick="modify()">修正</button>&nbsp;&nbsp;
 				  	<button type="button" class="btn btn-primary" onClick="deletecheck()">削除</button>
 				  	</c:if>
+					</sec:authorize>
+					<!--  	
+				  	<c:if test="${vo.useridx == 0 and sessionUser.useridx == null}">
+				  	</c:if>
+					-->
 				</div>
 				<hr>
 				
 				<!-- コメント  -->
 				<form method="post" action="/board/boardreplypro.do" name="reply">
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 				<input type="hidden" name="boardidx" value="${vo.boardidx}">
 				<input type="hidden" name="parent" value="0">
 				
+				<!--  				
 				<c:if test="${sessionUser.username != null}">
-					<input type="hidden" name="useridx" value="${sessionUser.useridx}" class="useridx">
-					<input type="hidden" name="nicname" value="${sessionUser.nicname}">
 				</c:if>
+				-->
+				<sec:authorize access="isAuthenticated()">
+					<input type="hidden" name="useridx" value="<sec:authentication property='principal.user.useridx'/>" class="useridx">
+					<input type="hidden" name="nicname" value="<sec:authentication property='principal.user.nicname'/>">
+				</sec:authorize>
 				
 				<div class="mb-3">
  					 <label for="exampleFormControlTextarea1" class="form-label view_p_03">コメント</label>
@@ -341,8 +398,12 @@ cursor: pointer;
 				</div>
 				
 				<!-- 非会員の場合、コメントもニックネームとパスワードを入力 -->
+				<!--  					
 				<c:if test="${sessionUser.username == null}">
+				</c:if>
+				-->	
 				<!-- 非会員の場合 useridx 0で置いておく-->
+				<sec:authorize access="isAnonymous()">
 				<input type="hidden" name="useridx" value="0" class="useridx">
 				<div class="row">
 					<div class="col-6">
@@ -354,7 +415,7 @@ cursor: pointer;
 						<input type="password" name="replypassword" id="replypassword">
 					</div>
 				</div>
-				</c:if>
+				</sec:authorize>
 				
 				<div class="view_btn_02">
 					<button type="button" class="btn btn-primary" onClick="replySend()">コメント 登録</button>				
@@ -386,10 +447,13 @@ cursor: pointer;
 					<input type="button" value="答文" onClick="ondisplay(${redive})">
 					</c:if>
 					
-					<c:if test="${list.useridx eq sessionUser.useridx}">
+					<sec:authorize access="isAuthenticated()">
+					<c:if test="${list.useridx eq sessionuseridx}">
 					<input type="button" value="削除" onClick="replydelete1(${list.replyidx},${list.boardidx })">
 					</c:if>
-					<c:if test="${list.useridx == 0 and sessionUser.useridx == null}">
+					</sec:authorize>
+					
+					<c:if test="${list.useridx == 0 and sessionuseridx == 0}">
 					<input type="button" value="削除" onClick="replydelete2(${list.replyidx},${list.boardidx })">
 					</c:if>		
 				</div>
@@ -399,18 +463,24 @@ cursor: pointer;
 					<div id="${redive}" class="comment_Reply" style="display: none;">
 						 
 						<form name="rereply" method="post" action="/board/boardreplypro.do">
+						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 						<input type="hidden" name="boardidx" value="${vo.boardidx}">
 						<input type="hidden" name="parent" value="${list.replyidx}">
-						
+						<!--  
 						<c:if test="${sessionUser.username != null}">
+						-->
+						<sec:authorize access="isAuthenticated()">
 							<input type="hidden" name="useridx" value="${sessionUser.useridx}" class="useridx">
 							<input type="hidden" name="nicname" value="${sessionUser.nicname}">
+						</sec:authorize>
+						<!--  
 						</c:if>
-						
+						-->
 						<textarea class="form-control text_01" id="exampleFormControlTextarea1" rows="3" name="replycontents"></textarea>
-						
+							<!--  
 							<c:if test="${sessionUser.username == null}">
-							
+							-->
+							<sec:authorize access="isAnonymous()">
 							<input type="hidden" name="useridx" value="0" class="useridx">
 							<div class="row">
 								<div class="col-6">
@@ -422,8 +492,10 @@ cursor: pointer;
 									<input type="password" name="replypassword" id="replypassword">
 								</div>
 							</div>
+							</sec:authorize>
+							<!--  
 							</c:if>
-							
+							-->
 							<input type="button" value="登録" onClick="rereplysend(${redive})">&nbsp;
 							<input type="button" value="キャンセル" onClick="offdisplay(${redive})">&nbsp;
 							

@@ -18,6 +18,15 @@ function checkpassword(){
 	var boardidx = $("#boardidx").val();
 	var boardpassword = $("#boardpassword").val();
 	var sendData = {"boardidx": boardidx, "boardpassword": boardpassword};
+	
+	//security ajax token 
+	var csrfHeaderName = "${_csrf.headerName}";
+    var csrfTokenValue = "${_csrf.token}";
+    
+    $(document).ajaxSend(function(e,xhr,options){
+    xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+    })
+	
 	$.ajax({
 		type:'post',
         url:'/board/boardpasswordcheck.do',
@@ -39,6 +48,7 @@ function checkpassword(){
 
 <p class="delete_01">パスワードを入力してください。</p>
 <form name="del" method="post" action="/board/boarddelete.do">
+ <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 <div class="delete_01">
 <input type="password" name="boardpassword" id="boardpassword" >
 <input type="hidden" name="boardidx" id="boardidx" value="${vo.boardidx}">

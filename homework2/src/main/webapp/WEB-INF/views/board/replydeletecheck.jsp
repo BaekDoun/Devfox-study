@@ -18,6 +18,15 @@ function checkpassword(){
 	var replyidx = $("#replyidx").val();
 	var replypassword = $("#replypassword").val();
 	var sendData = {"replyidx": replyidx, "replypassword": replypassword};
+	
+	//security ajax token 
+	var csrfHeaderName = "${_csrf.headerName}";
+    var csrfTokenValue = "${_csrf.token}";
+    
+    $(document).ajaxSend(function(e,xhr,options){
+    xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+    })
+	
 	$.ajax({
 		type:'post',
         url:'/board/replypasswordcheck.do',

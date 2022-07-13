@@ -25,6 +25,7 @@ function checkpassword(){
 
 <p class="delete_01">nicname, passwordを入力してください。</p>
 <form name="heart" method="post" action="/board/heartinsert.do">
+ <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 <div class="delete_01">
 <span>nicname</span>
 <input type="text" name="nicname" id="nicname" >
