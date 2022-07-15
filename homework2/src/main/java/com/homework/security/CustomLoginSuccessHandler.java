@@ -16,7 +16,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication auth) throws IOException, ServletException {
-		
+		//권한을 판단하여 로그인시 특정 jsp로 보낼 수 있다 07/15
 		List<String> roleNames = new ArrayList<>();
 		auth.getAuthorities().forEach(authority -> {
 			roleNames.add(authority.getAuthority());
