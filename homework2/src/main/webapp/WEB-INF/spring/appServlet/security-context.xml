@@ -11,12 +11,12 @@ beans와 security를 체크하여 security-context.xml파일을 만들었다 -->
 		http://www.springframework.org/schema/security 
 		http://www.springframework.org/schema/security/spring-security.xsd">
 
-	<!-- 비밀번호 암호화 객체-->
+	<!-- 암호화 객체-->
 	<bean id="bcryPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
 	<!-- 로그인 성공시 사용할 핸들러 객체-->
 	<bean id="CustomLoginSuccess" class="com.homework.security.CustomLoginSuccessHandler"/>
 	
-	<!-- 로그인 암호화 관련 -->
+	<!-- 시큐리티 유저 정보를 가져온다 관련 -->
 	<bean id="CustomUserDetailsService" class="com.homework.security.CustomUserDetailsService"/>
 			
 	<security:http>
@@ -30,7 +30,7 @@ beans와 security를 체크하여 security-context.xml파일을 만들었다 -->
 	<!-- 권한을 관리하는 시큘리트 -->
 	<security:authentication-manager>
 		<security:authentication-provider user-service-ref="CustomUserDetailsService">
-			<!-- 암호화된 비밀번호 비교 -->
+			<!-- 암호화된 비밀번호가 유효한지 검사 -->
 			<security:password-encoder ref="bcryPasswordEncoder"/>
 		</security:authentication-provider>
 	</security:authentication-manager>
