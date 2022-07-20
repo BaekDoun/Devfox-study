@@ -27,7 +27,7 @@ beans와 security를 체크하여 security-context.xml파일을 만들었다 -->
 		<security:logout logout-url="/user/logout.do" invalidate-session="true" logout-success-url="/"/>
 	</security:http>
 	
-	<!-- 권한을 관리하는 시큘리트 -->
+	<!-- 권한을 관리하는 시큐리티 -->
 	<security:authentication-manager>
 		<security:authentication-provider user-service-ref="CustomUserDetailsService">
 			<!-- 암호화된 비밀번호가 유효한지 검사 -->
