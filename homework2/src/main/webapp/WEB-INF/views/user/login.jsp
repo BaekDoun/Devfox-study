@@ -10,6 +10,10 @@
 .btn_01{
 	margin-top: 30px;
 }
+.kakaoimg_box{
+height: 40px;
+margin: 10px;
+}
 </style>
 
 <script>
@@ -107,7 +111,16 @@
    				-->
    				<button class="w-100 btn btn-lg btn-primary btn_01" type="button" >Login</button>
 				</form>
+				
+				<!-- 카카오로그인 아이콘 시작 -->
+				<div class="kakaoimg_box">
+					<a href="https://kauth.kakao.com/oauth/authorize?client_id=f7fe3cda212af37bd8432f5d4b3e64f3&redirect_uri=http://localhost:8090/kakaoLogin&response_type=code">
+						<img class="img-fluid kakaoLogin_img" src="/resources/image/kakaoicon.png">
+					</a>
+				</div>
+				<!-- 카카오로그인 아이콘 끝 -->
 			</div>
+			
 			<div class="col-4"></div>
 		</div>
 	</div>
