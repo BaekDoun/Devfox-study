@@ -51,7 +51,7 @@ public class KakaoController {
         JSONObject kakaoInfo =  new JSONObject(userInfo);
         model.addAttribute("kakaoInfo", kakaoInfo);
         
-        return "/"; //본인 원하는 경로 설정
+        return "/index"; //본인 원하는 경로 설정
 	}
 	
     //토큰발급
@@ -74,7 +74,7 @@ public class KakaoController {
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
             sb.append("&client_id=f7fe3cda212af37bd8432f5d4b3e64f3");  //본인이 발급받은 key
-            sb.append("&redirect_uri=http://localhost:8090/login/kakaoLogin");     // 본인이 설정해 놓은 경로
+            sb.append("&redirect_uri=http://localhost:8090/kakaoLogin");     // 본인이 설정해 놓은 경로
             sb.append("&code=" + authorize_code);
             bw.write(sb.toString());
             bw.flush();
