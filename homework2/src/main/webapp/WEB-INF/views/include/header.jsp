@@ -56,9 +56,11 @@
 		
 		<!--시큐리티로 로그인한 유저와 비회원유저 판단 메뉴 활성화 07/13-->
 		<sec:authorize access="isAnonymous()">
+		<c:if test="${kakaoVO.nicname ==null}">
      	<li class="nav-item">
           <a class="nav-link active" aria-current="page" href="/user/join.do">Join</a>
         </li>
+		</c:if>
 		</sec:authorize>
 		
         <li class="nav-item">
@@ -72,7 +74,9 @@
       
           <!--시큐리티로 로그인한 유저와 비회원유저 판단 메뉴 활성화 07/13-->
           <sec:authorize access="isAnonymous()">
+          <c:if test="${kakaoVO.nicname ==null}">
           <a class="nav-link active" aria-current="page" href="/user/login.do">Login</a>
+          </c:if>
           </sec:authorize>
          
           <!-- 로그인을 하면 로그아웃 칼럼이 활성화 된다. 06/30 -->
@@ -90,10 +94,15 @@
           	<a class="nav-link active" aria-current="page" href="javascript:logout_01();">Logout</a>
           </form>
           </sec:authorize>
-          
+          <c:if test="${kakaoVO.nicname != null}">
+          	<a class="nav-link active" aria-current="page" href="javascript:logout_02();">kakaoLogout</a>	
+          </c:if>
           <script>
           	function logout_01(){
           		logout.submit();
+          	}
+        	function logout_02(){
+          		location.href="/user/kakaoLogout.do";
           	}
           </script>
         </li>

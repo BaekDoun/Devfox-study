@@ -38,7 +38,12 @@ a{text-decoration: none;}
 						-->
 						
 						<sec:authorize access="isAnonymous()">
-						<p class="p_01">非会員で利用しています。</p>
+						<c:if test="${kakaoVO.nicname == null}">
+						<p class="p_01">非会員で利用しています。</p>						
+						</c:if>
+						<c:if test="${kakaoVO.nicname != null}">
+						<p class="p_01">${kakaoVO.nicname}様様ようこそ!</p>						
+						</c:if>
 						</sec:authorize>
 						
 						<!-- 세션 이용시 -->

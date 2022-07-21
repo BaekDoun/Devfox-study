@@ -1,11 +1,16 @@
 package com.homework.controller;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Controller;
@@ -17,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.homework.domain.UserVO;
 
 @Controller
 public class KakaoController {
@@ -36,7 +42,7 @@ public class KakaoController {
 	@RequestMapping(value = "/kakaoLogin")
 	public String oauthKakao(
 			@RequestParam(value = "code", required = false) String code
-			, Model model) throws Exception {
+			, Model model, HttpServletRequest request) throws Exception {
 
 		System.out.println("#########" + code);
         String access_Token = getAccessToken(code);
@@ -47,11 +53,21 @@ public class KakaoController {
         System.out.println("###access_Token#### : " + access_Token);
         System.out.println("###userInfo#### : " + userInfo.get("email"));
         System.out.println("###nickname#### : " + userInfo.get("nickname"));
-       
+
+        
         JSONObject kakaoInfo =  new JSONObject(userInfo);
         model.addAttribute("kakaoInfo", kakaoInfo);
         
-        return "/index"; //본인 원하는 경로 설정
+        //map에 저장된 key값을 이용하여 value를 vo에 저장
+        UserVO kakaoVO = new UserVO();
+        kakaoVO.setNicname((String)userInfo.get("nickname"));
+        kakaoVO.setEmail((String)userInfo.get("email"));
+        
+        //세션생성
+        HttpSession kakaoSession = request.getSession(); 
+        kakaoSession.setAttribute("kakaoVO", kakaoVO);
+        
+        return "redirect:/"; //본인 원하는 경로 설정 
 	}
 	
     //토큰발급

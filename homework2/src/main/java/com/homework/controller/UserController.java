@@ -122,4 +122,10 @@ public class UserController {
 		*/
 		return "redirect:/";
 	}
+	@GetMapping("kakaoLogout.do")
+	public String kakaoLogout(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		session.invalidate();
+		return "redirect:/";
+	}
 }
